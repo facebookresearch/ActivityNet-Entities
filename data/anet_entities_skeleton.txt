@@ -1,0 +1,49 @@
+Format of JSON ActivityNet-Entities annotation files
+
+### for anet_entities_trainval.json
+-> database
+  -> [video name]: identifier of video
+    - rwidth: resized width of video, will be 720px
+    - rheight: resized height of video, maintains aspect ratio
+    -> segments
+      -> [segment number]: segment from video with bounding box annotations
+        -> objects
+          -> [object number]: annotated object from segment
+            -> noun_phrases: a list of noun phrase (NP) annotations of the object, both the text and the index of the word in the sentence
+            - frame_ind: frame index (0-9, among the 10 sampled frames)
+            - ybr: y coordinate of bottom right corner of bounding box
+            - ytl: y coordinate of top left corner of bounding box
+            - xbr: x coordinate of bottom right corner of bounding box
+            - xtl: x coordinate of top left corner of bounding box
+            - crowds: whether the box represents a group of objects
+
+
+### for anet_entities_cleaned_class_thresh50_trainval.json
+-> vocab: the 431 object classes (not including the background class)
+-> database
+  -> [video name]: identifier of video
+    -> segments
+      -> [segment number]: segment from video with bounding box annotations
+        -> process_clss: object class of all the bounding boxes
+        -> tokens: tokenized sentence
+        -> frame_ind: frame index of all the bounding boxes
+        -> process_idx: the index of the object class in the sentence
+        -> process_bnd_box: coordinate of all the bounding boxes
+        -> crowds: whether the box represents a group of objects
+
+### an example on grounding evaluation subsmission files
+```
+{
+  "results": {
+    "v_QOlSCBRmfWY": {
+      "clss": ["room", "woman", "she"], # object class
+      "idx_in_sent": [8, 2, 12], # index of object in the sentence
+      "bbox_for_all_frames": [[[1,2,3,4], …, [1,2,3,4]], [[1,2,3,4], …, [1,2,3,4]], [[1,2,3,4], …, [1,2,3,4]]] # predicted bbox on all 10 uniformly sampled frames 
+    }
+  }
+  "external_data": {
+    "used": True, # Boolean flag
+    "details": "Object detector pre-trained on Visual Genome on object detection task."
+  }
+}
+```
