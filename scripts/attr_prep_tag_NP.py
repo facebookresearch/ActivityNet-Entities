@@ -5,37 +5,23 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-# Script to pre-process the raw annotation output to NP/object annotation files
+# Script to preprocess the raw annotation output to NP/object annotation files
 
 import os
 import sys
 import json
+import argparse
 import numpy as np
 from collections import Counter, defaultdict
 from stanfordcorenlp import StanfordCoreNLP
 
-data_prefix = sys.argv[1] # the dataset directory, e.g., '/private/home/luoweizhou/subsystem/BottomUpAttnVid/data/anet/'
-freq_thresh = int(sys.argv[2]) # 50
-
-src_file = data_prefix+'anet_bb.json' # the raw annotation output from the annotation tool
-
-target_np_file = data_prefix+'anet_entities.json'
-target_file = data_prefix+'anet_entities_cleaned_class_thresh'+str(freq_thresh)+'.json'
-
-attr_to_video_file = data_prefix+'attr_to_video.txt'
-split_file = data_prefix+'split_ids_anet_entities.json'
-train_cap_file = '/private/home/luoweizhou/subsystem/BottomUpAttnVid/data/anet/raw_annotation_file/train.json'
-val_cap_file = '/private/home/luoweizhou/subsystem/BottomUpAttnVid/data/anet/raw_annotation_file/val_1.json'
-
-np.random.seed(123) # reproducible
-
 
 def define_split(database):
 
-    with open(train_cap_file) as f:
+    with open(args.train_cap_file) as f:
         train_ids = json.load(f).keys()
 
-    with open(val_cap_file) as f:
+    with open(args.val_cap_file) as f:
         valtest_ids = json.load(f).keys()
 
     val_split = np.random.rand(len(valtest_ids))>=0.5 # split a half as the test split
@@ -59,7 +45,7 @@ def extract_attr(database, splits):
     split_dict = {}
     for split in splits:
         split_dict.update({s:s for s in split})
-    print('Object classes defined on {} videos, freq threshold is {}'.format(len(split_dict), freq_thresh))
+    print('Object classes defined on {} videos, freq threshold is {}'.format(len(split_dict), args.freq_thresh))
 
     attr_all = [] # all the attributes
 
@@ -108,7 +94,7 @@ def prep_all(database, database_cap, obj_cls_lst, w2l, nlp):
     crowd_all = [] # all the crowd labels
 
     attr_dict = defaultdict(list)
-    with open(attr_to_video_file) as f:
+    with open(args.attr_to_video_file) as f:
         for line in f.readlines():
             line_split = line.split(',')
             attr_id = line_split[0]
@@ -148,10 +134,6 @@ def prep_all(database, database_cap, obj_cls_lst, w2l, nlp):
                 for ind, tup in enumerate(attr_sent):
                     if attr_sent[ind][1] == '\\,':
                         attr_sent[ind][1] = ','
-                    # elif attr_sent[ind][1] == '':
-                    #     attr_sent[ind][1] = 'dummy'
-                    # elif attr_sent[ind][1] in  ('.', '!', '?'):
-                    #     attr_sent[ind][1] = ','
 
                 new_obj_lst['tokens'] = [i[1] for i in attr_sent] # all the word tokens
 
@@ -166,7 +148,7 @@ def prep_all(database, database_cap, obj_cls_lst, w2l, nlp):
                     np_ann['frame_ind'] = int(box_id)
                     np_ann.update(box)
 
-                    if len(box['attributes']) > 0: # just in case the attribute is empty, though it should not be...
+                    if len(box['attributes']) > 0: # just in case the attribute is empty, though it should not be
                         tmp = []
                         tmp_ind = []
                         tmp_obj = []
@@ -223,8 +205,6 @@ def prep_all(database, database_cap, obj_cls_lst, w2l, nlp):
                                 attr_lst.append(tmp_obj[-1]) # the last noun is usually the head noun
                                 attr_ind_lst.append(tmp_ind[-1])
 
-                        # if len(np_lst) == 0:
-                        #     print('no nps! {} - {}'.format(vid_id, seg_id))
                         assert(len(np_lst) > 0)
 
                         np_ann['noun_phrases'] = np_lst
@@ -307,12 +287,12 @@ def freq_obj_list(attr_all, nlp, props):
     
     obj_cls_lst = []
     for w,freq in top_obj_cls.items():
-        if freq >= freq_thresh:
+        if freq >= args.freq_thresh:
             obj_cls_lst.append(w.encode('ascii'))
 
     w2l = {}
     for w, l in w2lemma.items():
-        # manually correct some machine mistakes
+        # manually correct some machine lemmatization mistakes
         spec_w2l = {'outfits':'outfit', 'mariachi':'mariachi', 'barrios':'barrio', 'mans':'man', 'bags':'bag', 'aerobics':'aerobic', 'motobikes':'motobike', 'graffiti':'graffiti', 'semi':'semi', 'los':'los', 'tutus':'tutu'}
         if spec_w2l.get(w, -1) != -1: # one special case...
             w2l[w] = spec_w2l[w]
@@ -325,31 +305,31 @@ def freq_obj_list(attr_all, nlp, props):
     return obj_cls_lst, w2l
 
 
-if __name__ == "__main__":
-    nlp = StanfordCoreNLP('/private/home/luoweizhou/subsystem/BottomUpAttn/tools/stanford-corenlp-full-2018-02-27')
+def main(args):
+    nlp = StanfordCoreNLP(args.corenlp_path)
     props={'annotators': 'ssplit, tokenize, lemma','pipelineLanguage':'en', 'outputFormat':'json'}
 
     # load anet captions
-    with open(train_cap_file) as f:
+    with open(args.train_cap_file) as f:
         database_cap = json.load(f)
-    with open(val_cap_file) as f:
+    with open(args.val_cap_file) as f:
         database_cap.update(json.load(f))
     print('Number of videos in ActivityNet Captions (train+val): {}'.format(len(database_cap)))
 
     # load raw annotation output anet bb
-    with open(src_file) as f:
+    with open(args.src_file) as f:
         database = json.load(f)['database']
     print('Number of videos in ActivityNet-BB (train+val): {}'.format(len(database)))
 
-    if os.path.isfile(split_file):
-        with open(split_file) as f:
+    if os.path.isfile(args.split_file):
+        with open(args.split_file) as f:
             all_splits = json.load(f)
             splits = [all_splits['training'], all_splits['validation'], all_splits['testing']]
     else:
-        raise 'Cannot find the split file! Uncomment this if you want to create a new split.'
+        raise '[WARNING] Cannot find the split file! Uncomment this if you want to create a new split.'
         splits = define_split(database)
         all_splits = {'training':splits[0], 'validation':splits[1], 'testing':splits[2]}
-        with open(split_file, 'w') as f:
+        with open(args.split_file, 'w') as f:
             json.dump(all_splits, f)
 
     attr_all = extract_attr(database, splits[:2]) # define object classes on train/val data
@@ -360,15 +340,38 @@ if __name__ == "__main__":
 
     # write raw annotation file
     new_database_np = {'database':new_database_np}
-    with open(target_np_file, 'w') as f:
+    with open(args.target_np_file, 'w') as f:
         json.dump(new_database_np, f)
 
     # write pre-processed annotation file
     new_database = {'vocab':obj_cls_lst, 'annotations':new_database}
-    with open(target_file, 'w') as f:
+    with open(args.target_file, 'w') as f:
         json.dump(new_database, f)
 
     # with open(class_file, 'w') as f:
     #     f.write('\n'.join(obj_cls_lst))
 
-    nlp.close() # Do not forget to close the server!
+    nlp.close()
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='ActivityNet-Entities dataset preprocessing script.')
+    parser.add_argument('--dataset_root', type=str, default='/private/home/luoweizhou/subsystem/BottomUpAttnVid/data/anet/', help='dataset root directory')
+    parser.add_argument('--corenlp_path', type=str, default='/private/home/luoweizhou/subsystem/BottomUpAttn/tools/stanford-corenlp-full-2018-02-27', help='path to stanford core nlp toolkit')
+    parser.add_argument('--freq_thresh', type=int, default=50, help='frequency threshold for determining object classes')
+    parser.add_argument('--train_cap_file', type=str, default='/private/home/luoweizhou/subsystem/BottomUpAttnVid/data/anet/raw_annotation_file/train.json')
+    parser.add_argument('--val_cap_file', type=str, default='/private/home/luoweizhou/subsystem/BottomUpAttnVid/data/anet/raw_annotation_file/val_1.json')
+    args = parser.parse_args()
+
+    args.src_file = args.dataset_root+'anet_bb.json' # the raw annotation file
+    
+    args.target_np_file = args.dataset_root+'anet_entities.json' # output np file
+    args.target_file = args.dataset_root+'anet_entities_cleaned_class_thresh'+str(args.freq_thresh)+'.json' # output object file
+    
+    args.attr_to_video_file = args.dataset_root+'attr_to_video.txt' # from annotation tool
+    args.split_file = args.dataset_root+'split_ids_anet_entities.json' # split file
+    
+    np.random.seed(123) # make reproducible
+
+
+    main(args)

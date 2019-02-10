@@ -5,6 +5,8 @@
 # LICENSE file in the root directory of this source tree.
 #
 
+# Evaluation script for object grounding over GT sentences
+
 import json
 import argparse
 import torch
