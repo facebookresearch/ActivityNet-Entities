@@ -9,19 +9,16 @@ ActivityNet-Entities, is based on the video description dataset [ActivityNet Cap
 We have the following dataset files under the `data` directory:
 
 - `anet_entities_trainval.json`: The raw dataset file with noun phrase and bounding box annotations. We only release the training and the validation splits for now.
-
 - `anet_entities_cleaned_class_thresh50_trainval.json`: Pre-processed dataset file with object class and bounding box annotations. For training and validation splits only.
-
+- `anet_entities_cleaned_class_thresh50_test_skeleton.json`: Object class annotation for the testing split. This file is for evaluation server purpose and the bounding box annotation is not given. See below for more details.
 - `anet_entities_skeleton.txt`: Specify the expected structure of the JSON annotation files.
-
 - `split_ids_anet_entities.json`: Video IDs included in the training/validation/testing splits.
 
-- `anet_entities_cleaned_class_thresh50_test_skeleton.json`: Object class annotation for the testing split. This file is for evaluation server purpose and the bounding box annotation is not given. See below for more details.
-
-Note: Both the raw dataset file and the pre-processed dataset file contains all the 12469 videos in the original training and validation splits (as in ActivityNet Captions, which is based on [ActivityNet 1.3](http://activity-net.org/download.html)). This includes 626 videos without box annotations.
+Note: Both the raw dataset file and the pre-processed dataset file contain all the 12469 videos in our training and validation split (training + one half of the validation split as in ActivityNet Captions, which is based on [ActivityNet 1.3](http://activity-net.org/download.html)). This includes 626 videos without box annotations.
 
 ### Evaluation
 Under the `scripts` directory, we include:
+
 - `attr_prep_tag_NP.py`: The preprocessing scripts to obtain the NP/object annotation files.
 - `anet_entities_np_stats.py`, `anet_entities_object_stats.py`: The scripts that print the dataset stats.
 - `eval_grd_anet_entities.py`: The evaluation script for object grounding on GT captions. [PyTorch](https://pytorch.org/get-started/locally/) is required. To evaluate your results, simply run:
