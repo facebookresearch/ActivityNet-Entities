@@ -37,35 +37,32 @@ def main(args):
                 # print('no annotation available')
                 continue
 
-            ref_bbox_all = torch.cat((torch.Tensor(ann['process_bnd_box']), torch.Tensor(ann['frame_ind']).unsqueeze(-1)), dim=1) # 5-D coordinates
-            sent_idx = set(itertools.chain.from_iterable(ann['process_idx']))
+            ref_bbox_all = torch.cat((torch.Tensor(ann['process_bnd_box']), \
+                torch.Tensor(ann['frame_ind']).unsqueeze(-1)), dim=1) # 5-D coordinates
+            sent_idx = set(itertools.chain.from_iterable(ann['process_idx'])) # index of word in sentence to evaluate
             for idx in sent_idx:
-                sel_idx = [ind for ind, i in enumerate(ann['process_idx']) if idx in i] # index of NPs
-                ref_bbox = ref_bbox_all[sel_idx]
+                sel_idx = [ind for ind, i in enumerate(ann['process_idx']) if idx in i]
+                ref_bbox = ref_bbox_all[sel_idx] # select matched boxes
+                # Note that despite discouraged, a single word could be annotated across multiple boxes/frames
+
                 assert(ref_bbox.size(0) > 0)
                 class_name = ann['process_clss'][sel_idx[0]][ann['process_idx'][sel_idx[0]].index(idx)]
                 if vid not in pred:
-                    # print('video not grounded!')
-                    results[class_name].append(0)
+                    results[class_name].append(0) # video not grounded
                 elif seg not in pred[vid]:
-                    # print('segment not grounded!')
-                    results[class_name].append(0)
+                    results[class_name].append(0) # segment not grounded
                 elif idx not in pred[vid][seg]['idx_in_sent']:
-                    # print('object not grounded!')
-                    results[class_name].append(0)
+                    results[class_name].append(0) # object not grounded
                 else:
                     pred_ind = pred[vid][seg]['idx_in_sent'].index(idx)
-                    # if len(set([ann['frame_ind'][i] for i in sel_idx])) > 1: # a single word could be annotated across multiple frames
-                    #     print(len(set([ann['frame_ind'][i] for i in sel_idx])))
+                    pred_bbox = torch.cat((torch.Tensor(pred[vid][seg]['bbox_for_all_frames'][pred_ind])[:,:4], \
+                        torch.Tensor(range(10)).unsqueeze(-1)), dim=1)
 
-                    pred_bbox = torch.cat((torch.Tensor(pred[vid][seg]['bbox_for_all_frames'][pred_ind])[:,:4], torch.Tensor(range(10)).unsqueeze(-1)), dim=1)
-
-                    frm_mask = torch.from_numpy(get_frm_mask(pred_bbox[:, 4].numpy(), ref_bbox[:, 4].numpy()).astype('uint8'))
-                    overlap = bbox_overlaps_batch(pred_bbox[:, :5].unsqueeze(0), ref_bbox[:, :5].unsqueeze(0), frm_mask.unsqueeze(0))
-                    if torch.max(overlap) > args.iou:
-                        results[class_name].append(1)
-                    else:
-                        results[class_name].append(0)
+                    frm_mask = torch.from_numpy(get_frm_mask(pred_bbox[:, 4].numpy(), \
+                        ref_bbox[:, 4].numpy()).astype('uint8'))
+                    overlap = bbox_overlaps_batch(pred_bbox[:, :5].unsqueeze(0), \
+                        ref_bbox[:, :5].unsqueeze(0), frm_mask.unsqueeze(0))
+                    results[class_name].append(1 if torch.max(overlap) > args.iou else 0)
 
     print('Number of groundable objects in this split: {}'.format(len(results)))
     grd_accu = np.mean([sum(hm)*1./len(hm) for i,hm in results.items()])
@@ -77,9 +74,9 @@ def main(args):
         print('Object frequency and grounding accuracy per class (descending by object frequency):')
         accu_per_clss = {(i, sum(hm)*1./len(hm)):len(hm) for i,hm in results.items()}
         accu_per_clss = sorted(accu_per_clss.items(), key=lambda x:x[1], reverse=True)
-
         for accu in accu_per_clss:
             print('{} ({}): {:.4f}'.format(accu[0][0], accu[1], accu[0][1]))
+
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser(description='ActivityNet-Entities object grounding evaluation script.')

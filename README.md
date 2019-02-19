@@ -23,8 +23,8 @@ Note: Both the raw dataset file and the pre-processed dataset file contains all 
 ### Evaluation
 Under the `scripts` directory, we include:
 - `attr_prep_tag_NP.py`: The preprocessing scripts to obtain the NP/object annotation files.
-- The scripts that print the dataset stats.
-- The evaluation script for object grounding. [PyTorch](https://pytorch.org/get-started/locally/) is required. To evaluate your results, run:
+- `anet_entities_np_stats.py`, `anet_entities_object_stats.py`: The scripts that print the dataset stats.
+- `eval_grd_anet_entities.py`: The evaluation script for object grounding on GT captions. [PyTorch](https://pytorch.org/get-started/locally/) is required. To evaluate your results, simply run:
 ```
 python scripts/eval_grd_anet_entities.py -s YOUR_SUBMISSION_FILE.JSON
 ```

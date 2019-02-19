@@ -235,8 +235,8 @@ def prep_all(database, database_cap, obj_cls_lst, w2l, nlp):
                 new_obj_lst['process_idx'] = []
             seg_counter += 1
             new_seg[seg_id] = new_obj_lst
+            new_database_np[vid_id]['segments'][seg_id]['tokens'] = new_obj_lst['tokens']
 
-        # new_database[vid_id] = {'rwidth':vid['rwidth'], 'rheight':vid['rheight'], 'segments':new_seg}
         new_database[vid_id] = {'segments':new_seg}
 
     # quick stats
@@ -347,9 +347,6 @@ def main(args):
     new_database = {'vocab':obj_cls_lst, 'annotations':new_database}
     with open(args.target_file, 'w') as f:
         json.dump(new_database, f)
-
-    # with open(class_file, 'w') as f:
-    #     f.write('\n'.join(obj_cls_lst))
 
     nlp.close()
 
