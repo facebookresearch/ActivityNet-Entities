@@ -6,7 +6,7 @@ Format of JSON ActivityNet-Entities annotation files
     - rwidth: resized width of video, will be 720px
     - rheight: resized height of video, maintains aspect ratio
     -> segments
-      -> [segment number]: segment from video with bounding box annotations
+      -> [segment id]: segment from video with bounding box annotations
         -> objects
           -> [object number]: annotated object from segment
             -> noun_phrases: a list of noun phrase (NP) annotations of the object, both the text and the index of the word in the sentence
@@ -23,7 +23,7 @@ Format of JSON ActivityNet-Entities annotation files
 -> database
   -> [video name]: identifier of video
     -> segments
-      -> [segment number]: segment from video with bounding box annotations
+      -> [segment id]: segment from video with bounding box annotations
         -> process_clss: object class of all the bounding boxes
         -> tokens: tokenized sentence
         -> frame_ind: frame index of all the bounding boxes
@@ -36,13 +36,15 @@ Format of JSON ActivityNet-Entities annotation files
 {
   "results": {
     "v_QOlSCBRmfWY": {
-      "clss": ["room", "woman", "she"], # object class
-      "idx_in_sent": [8, 2, 12], # index of object in the sentence
-      "bbox_for_all_frames": [[[1,2,3,4], …, [1,2,3,4]], [[1,2,3,4], …, [1,2,3,4]], [[1,2,3,4], …, [1,2,3,4]]] # predicted bbox on all 10 uniformly sampled frames 
+      "0": { # segment id
+          "clss": ["room", "woman", "she"], # object class
+          "idx_in_sent": [8, 2, 12], # index of object in the sentence
+          "bbox_for_all_frames": [[[1,2,3,4], …, [1,2,3,4]], [[1,2,3,4], …, [1,2,3,4]], [[1,2,3,4], …, [1,2,3,4]]] # predicted bbox on all 10 uniformly sampled frames
+      }
     }
-  }
+  },
   "external_data": {
-    "used": True, # Boolean flag
+    "used": true, # Boolean flag
     "details": "Object detector pre-trained on Visual Genome on object detection task."
   }
 }
