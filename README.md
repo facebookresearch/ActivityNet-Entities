@@ -21,14 +21,19 @@ Under the `scripts` directory, we include:
 
 - `attr_prep_tag_NP.py`: The preprocessing scripts to obtain the NP/object annotation files.
 - `anet_entities_np_stats.py`, `anet_entities_object_stats.py`: The scripts that print the dataset stats.
-- `eval_gt_grd_anet_entities.py`: The evaluation script for object grounding on GT captions (metrics in paper: Attn., Grd.). [PyTorch](https://pytorch.org/get-started/locally/) is required. To evaluate your results, simply run:
+- `eval_grd_anet_entities.py`: The evaluation script for object grounding on GT/generated captions. [PyTorch](https://pytorch.org/get-started/locally/), [Stanford CoreNLP 3.9.1](https://stanfordnlp.github.io/CoreNLP/history.html) and the [Python wrapper](https://github.com/Lynten/stanford-corenlp) are required.
+
+To evaluate attention/grounding output based upon GT sentences (metrics in paper: Attn., Grd.), run:
 ```
-python scripts/eval_gt_grd_anet_entities.py -s YOUR_SUBMISSION_FILE.JSON
+python scripts/eval_grd_anet_entities.py -s YOUR_SUBMISSION_FILE.JSON --eval_mode GT
 ```
-- `eval_grd_anet_entities.py`: The evaluation script for object grounding on generated captions (metrics in paper: F1<sub>all</sub>}, F1<sub>loc</sub>). [PyTorch](https://pytorch.org/get-started/locally/), [Stanford CoreNLP 3.9.1](https://stanfordnlp.github.io/CoreNLP/history.html) and the [Python wrapper](https://github.com/Lynten/stanford-corenlp) are required. To evaluate, similarly run:
+
+To evaluate attention (same for grounding) output based upon generated sentences (metrics in paper: F1<sub>all</sub>, F1<sub>loc</sub>), similarly run:
 ```
-python scripts/eval_grd_anet_entities.py -s YOUR_SUBMISSION_FILE.JSON
+python scripts/eval_grd_anet_entities.py -s YOUR_SUBMISSION_FILE.JSON --eval_mode gen --loc_mode $loc_mode
 ```
+where setting `loc_mode=all` to perform evaluation on all object words while setting `loc_mode=loc` to perform evaluation only on correctly-predicted object words.
+
 Please follow the example in `data/anet_entities_skeleton.txt` to format your submission file.
 
 
