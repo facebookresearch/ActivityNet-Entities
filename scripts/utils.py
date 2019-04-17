@@ -25,7 +25,7 @@
 import torch
 import numpy as np
 
-def bbox_overlaps_batch(anchors, gt_boxes, frm_mask):
+def bbox_overlaps_batch(anchors, gt_boxes, frm_mask=None):
     """
     anchors: (N, 4) ndarray of float
     gt_boxes: (b, K, 5) ndarray of float
@@ -37,7 +37,7 @@ def bbox_overlaps_batch(anchors, gt_boxes, frm_mask):
 
 
     if anchors.dim() == 2:
-        raise NotImplementedError # hasn't updated the mask yet
+        assert frm_mask == None, 'mask not implemented yet' # hasn't updated the mask yet
         N = anchors.size(0)
         K = gt_boxes.size(1)
 
@@ -107,16 +107,17 @@ def bbox_overlaps_batch(anchors, gt_boxes, frm_mask):
         ih[ih < 0] = 0
         ua = anchors_area + gt_boxes_area - (iw * ih)
 
-        # proposal and gt should be on the same frame to overlap
-        frm_mask = ~frm_mask
-        # print('Percentage of proposals that are in the annotated frame: {}'.format(torch.mean(frm_mask.float())))
+        if frm_mask is not None:
+            # proposal and gt should be on the same frame to overlap
+            frm_mask = ~frm_mask
+            # print('Percentage of proposals that are in the annotated frame: {}'.format(torch.mean(frm_mask.float())))
 
-        overlaps = iw * ih / ua
-        overlaps *= frm_mask.type(overlaps.type())
+            overlaps = iw * ih / ua
+            overlaps *= frm_mask.type(overlaps.type())
 
-        # mask the overlap here.
-        overlaps.masked_fill_(gt_area_zero.view(batch_size, 1, K).expand(batch_size, N, K), 0)
-        overlaps.masked_fill_(anchors_area_zero.view(batch_size, N, 1).expand(batch_size, N, K), -1)
+            # mask the overlap here.
+            overlaps.masked_fill_(gt_area_zero.view(batch_size, 1, K).expand(batch_size, N, K), 0)
+            overlaps.masked_fill_(anchors_area_zero.view(batch_size, N, 1).expand(batch_size, N, K), -1)
     else:
         raise ValueError('anchors input dimension is not correct.')
     

@@ -172,6 +172,8 @@ class ANetGrdEval(object):
                         if mode == 'all':
                             prec[class_name].append(0) # hallucinated object
 
+        nlp.close()
+
         # recall
         recall = defaultdict(list)
         for vid, anns in ref.items():
@@ -229,8 +231,6 @@ class ANetGrdEval(object):
             accu_per_clss = sorted(accu_per_clss.items(), key=lambda x:x[1][1], reverse=True)
             for accu in accu_per_clss:
                 print('{} ({} / {}): {:.4f} / {:.4f}'.format(accu[0][0], accu[1][0], accu[1][1], accu[0][1], accu[0][2]))
-
-        nlp.close()
 
         return prec_accu, recall_accu, f1
 
