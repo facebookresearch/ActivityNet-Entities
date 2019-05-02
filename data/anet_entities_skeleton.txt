@@ -28,7 +28,7 @@ Format of JSON ActivityNet-Entities annotation files
         -> tokens: tokenized sentence
         -> frame_ind: frame index of all the bounding boxes
         -> process_idx: the index of the object class in the sentence
-        -> process_bnd_box: coordinate of all the bounding boxes
+        -> process_bnd_box: coordinate of all the bounding boxes (xtl, ytl, xbr, ybr)
         -> crowds: whether the box represents a group of objects
 
 ### an example on grounding evaluation subsmission files

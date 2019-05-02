@@ -40,11 +40,11 @@ Please follow the example in `data/anet_entities_skeleton.txt` to format your su
 ### Others
 Please contact <luozhou@umich.edu> if you have any trouble running the code. Please cite the following paper if you use the dataset.
 ```
-@article{zhou2018grounded,
+@inproceedings{zhou2019grounded,
   title={Grounded Video Description},
   author={Zhou, Luowei and Kalantidis, Yannis and Chen, Xinlei and Corso, Jason J and Rohrbach, Marcus},
-  journal={arXiv preprint arXiv:1812.06587},
-  year={2018}
+  journal={CVPR},
+  year={2019}
 }
 ```
 ### License

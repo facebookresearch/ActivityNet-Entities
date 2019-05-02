@@ -5,7 +5,7 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-# Evaluation script for object grounding over generated sentences
+# Evaluation script for object localization
 
 import json
 import argparse
