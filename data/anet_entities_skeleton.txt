@@ -20,7 +20,7 @@ Format of JSON ActivityNet-Entities annotation files
 
 ### for anet_entities_cleaned_class_thresh50_trainval.json
 -> vocab: the 431 object classes (not including the background class)
--> database
+-> annotations
   -> [video name]: identifier of video
     -> segments
       -> [segment id]: segment from video with bounding box annotations
