@@ -1,5 +1,5 @@
 # ActivityNet Entities dataset
-This repo hosts the dataset used in our paper [Grounded Video Description](https://arxiv.org/abs/1812.06587).
+This repo hosts the dataset and evaluation scripts used in our paper [Grounded Video Description](https://arxiv.org/abs/1812.06587) (GVD). We also released the source code of GVD in this [repo](https://github.com/facebookresearch/grounded-video-description).
 
 ActivityNet-Entities, is based on the video description dataset [ActivityNet Captions](https://cs.stanford.edu/people/ranjaykrishna/densevid/) and augments it with 158k bounding box annotations, each grounding a noun phrase (NP). Here we release the complete set of NP-based annotations as well as the pre-processed object-based annotations.
 
@@ -43,7 +43,7 @@ Please contact <luozhou@umich.edu> if you have any trouble running the code. Ple
 @inproceedings{zhou2019grounded,
   title={Grounded Video Description},
   author={Zhou, Luowei and Kalantidis, Yannis and Chen, Xinlei and Corso, Jason J and Rohrbach, Marcus},
-  journal={CVPR},
+  booktitle={CVPR},
   year={2019}
 }
 ```
