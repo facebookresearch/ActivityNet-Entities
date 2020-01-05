@@ -34,7 +34,7 @@ python scripts/eval_grd_anet_entities.py -s YOUR_SUBMISSION_FILE.JSON --eval_mod
 ```
 where setting `loc_mode=all` to perform evaluation on all object words while setting `loc_mode=loc` to perform evaluation only on correctly-predicted object words.
 
-We provide a Codalab evaluation [server](https://competitions.codalab.org/competitions/22835) for the test set. Please follow the example in `data/anet_entities_skeleton.txt` to format your submission file.
+We provide a Codalab evaluation [server](https://competitions.codalab.org/competitions/20537) for the test set. Please follow the example in `data/anet_entities_skeleton.txt` to format your submission file.
 
 
 ### Others
