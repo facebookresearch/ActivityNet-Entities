@@ -21,7 +21,7 @@ Under the `scripts` directory, we include:
 
 - `attr_prep_tag_NP.py`: The preprocessing scripts to obtain the NP/object annotation files.
 - `anet_entities_np_stats.py`, `anet_entities_object_stats.py`: The scripts that print the dataset stats.
-- `eval_grd_anet_entities.py`: The evaluation script for object grounding on GT/generated captions. [PyTorch](https://pytorch.org/get-started/locally/), [Stanford CoreNLP 3.9.1](https://stanfordnlp.github.io/CoreNLP/history.html) and the [Python wrapper](https://github.com/Lynten/stanford-corenlp) are required.
+- `eval_grd_anet_entities.py`: The evaluation script for object grounding on GT/generated captions. [PyTorch (tested on 1.1 and 1.3)](https://pytorch.org/get-started/locally/), [Stanford CoreNLP 3.9.1](https://stanfordnlp.github.io/CoreNLP/history.html) and the [Python wrapper](https://github.com/Lynten/stanford-corenlp) are required.
 
 To evaluate attention/grounding output based upon GT sentences (metrics in paper: Attn., Grd.), run:
 ```
