@@ -1,4 +1,7 @@
 # ActivityNet Entities dataset
+
+### [ActivityNet Entities Object Localization (Grounding)](http://activity-net.org/challenges/2020/tasks/guest_anet_eol.html) will be one of the guest tasks in the official ActivityNet challange this year! Stay tuned for details.
+
 This repo hosts the dataset and evaluation scripts used in our paper [Grounded Video Description](https://arxiv.org/abs/1812.06587) (GVD). **We also released the source code of GVD in this [repo](https://github.com/facebookresearch/grounded-video-description).**
 
 ActivityNet-Entities, is based on the video description dataset [ActivityNet Captions](https://cs.stanford.edu/people/ranjaykrishna/densevid/) and augments it with 158k bounding box annotations, each grounding a noun phrase (NP). Here we release the complete set of NP-based annotations as well as the pre-processed object-based annotations.
