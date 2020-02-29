@@ -11,10 +11,10 @@ Format of JSON ActivityNet-Entities annotation files
           -> [object number]: annotated object from segment
             -> noun_phrases: a list of noun phrase (NP) annotations of the object, both the text and the index of the word in the sentence
             - frame_ind: frame index (0-9, we divide each video evenly into 10 clips and sample the middle frame of each clip)
-            - ybr: y coordinate of bottom right corner of bounding box
+            - xtl: x coordinate of top left corner of bounding box (between 0 and 720)
             - ytl: y coordinate of top left corner of bounding box
-            - xbr: x coordinate of bottom right corner of bounding box
-            - xtl: x coordinate of top left corner of bounding box
+            - xbr: x coordinate of bottom right corner of bounding box (between 0 and 720)
+            - ybr: y coordinate of bottom right corner of bounding box
             - crowds: whether the box represents a group of objects
 
 
