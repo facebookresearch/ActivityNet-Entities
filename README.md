@@ -55,8 +55,16 @@ where setting `loc_mode=all` to perform evaluation on all object words while set
 
 We provide a Codalab evaluation [server](https://competitions.codalab.org/competitions/20537) for the validation set. The evaluation on the **public** test set is available now until ECCV deadline and will be temporarily closed afterwards. The server will reopen on both test sets around April 13th. Please follow the example in `data/anet_entities_skeleton.txt` to format your submission file.
 
+### FAQs
+1. How are the 10 frames sampled from each video clip (event)?
+⋅⋅⋅We divide each clip evenly into 10 segments and sample the middle frame of each segment. We have clarified this in the skeleton [file](https://github.com/facebookresearch/ActivityNet-Entities/blob/master/data/anet_entities_skeleton.txt#L13).
 
-### Others
+2. How can I sample the frames by myself and extract feature?
+⋅⋅⋅First, you may want to check if the region feature and RGB/motion frame-wise feature we [provided](https://github.com/facebookresearch/grounded-video-description#data-preparation) meet your requirement.⋅⋅
+⋅⋅⋅If not, you can first download the ActivityNet videos using this [web crawler](https://github.com/activitynet/ActivityNet/blob/master/Crawler/fetch_activitynet_videos.sh) or contact the dataset [owners](http://activity-net.org/people.html) for help. An incorrect video encoding format would result in a wrong frame resolution and aspect ratio, and therefore a mismatch in the annotation. Hence, make sure you download the videos in the [best mp4 format](https://github.com/activitynet/ActivityNet/blob/master/Crawler/run_crosscheck.py#L32).⋅⋅
+⋅⋅⋅Once you have the videos, you can use `ffmpeg` to extract the frames. We provide an example command [here](https://github.com/facebookresearch/ActivityNet-Entities/issues/1#issuecomment-529065386).
+
+### Reference
 Please contact <luozhou@umich.edu> if you have any trouble running the code. Please cite the following paper if you use the dataset.
 ```
 @inproceedings{zhou2019grounded,
@@ -66,6 +74,7 @@ Please contact <luozhou@umich.edu> if you have any trouble running the code. Ple
   year={2019}
 }
 ```
+
 ### License
 This project is licensed under the license found in the LICENSE file in the root directory of this source tree.
 
