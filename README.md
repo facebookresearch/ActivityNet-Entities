@@ -12,6 +12,16 @@ ActivityNet-Entities, is based on the video description dataset [ActivityNet Cap
 ## <a name="aeol"></a>ActivityNet Entities Object Localization Challenge 2020
 **The winners will be announced at ActivityNet Challenge at CVPR 2020 (June 14th). Prizes are to be decided.**
 
+### Important dates
+Note that these dates are tentative and subject to changes if necessary.
+- March 2: public Train/Val/Test sets are available; participants can start training.
+- April 13: release Hidden Test set with ground truth withheld and open evaluation server.
+- May 22: public the leaderboard.
+- May 29: close evaluation server.
+- June 2: Deadline for submitting the report.
+- June 14: a full-day workshop at CVPR 2020.
+
+### Challenge details
 For general challenge descriptions, refer to the official ANet-Entities Challenge [page](http://activity-net.org/challenges/2020/tasks/guest_anet_eol.html).
 
 The annotations on the training and validation set is in `data/anet_entities_cleaned_class_thresh50_trainval.json`. `data/anet_entities_skeleton.txt` specifies the JSON file structure on both reference files and submission files.
