@@ -113,150 +113,25 @@ class ANetGrdEval(object):
         return grd_accu
 
 
-    def grd_eval(self, mode='all'):
-
-        if mode == 'all':
-            print('Evaluating on all object words.')
-        elif mode == 'loc':
-            print('Evaluating only on correctly-predicted object words.')
-        else:
-            raise Exception('Invalid loc mode!')
-
+    def precision_recall_util(self, mode='all'):
         ref = self.ref
         pred = self.pred
         print('Number of videos in the reference: {}, number of videos in the submission: {}'.format(len(ref), len(pred)))
 
         nlp = StanfordCoreNLP('tools/stanford-corenlp-full-2018-02-27')
         props={'annotators': 'lemma','pipelineLanguage':'en', 'outputFormat':'json'}
-        vocab_in_split = set()
 
-        # precision
+        vocab_in_split = set()
         prec = defaultdict(list)
+        prec_per_sent = defaultdict(list)
+
         for vid, anns in tqdm(ref.items()):
-            for seg, ann in anns['segments'].items():
-                if len(ann['frame_ind']) == 0 or vid not in pred or seg not in pred[vid]:
-                    continue # do not penalize if sentence not annotated
-
-                ref_bbox_all = torch.cat((torch.Tensor(ann['process_bnd_box']), \
-                    torch.Tensor(ann['frame_ind']).unsqueeze(-1)), dim=1) # 5-D coordinates
-
-                idx_in_sent = {}
-                for box_idx, cls_lst in enumerate(ann['process_clss']):
-                    vocab_in_split.update(set(cls_lst))
-                    for cls_idx, cls in enumerate(cls_lst):
-                        idx_in_sent[cls] = idx_in_sent.get(cls, []) + [ann['process_idx'][box_idx][cls_idx]]
-
-                sent_idx = set(itertools.chain.from_iterable(ann['process_idx'])) # index of gt object words
-                exclude_obj = {json.loads(nlp.annotate(token, properties=props) \
-                    )['sentences'][0]['tokens'][0]['lemma']:1 for token_idx, token in enumerate(ann['tokens'] \
-                    ) if (token_idx not in sent_idx and token != '')}
-
-                for pred_idx, class_name in enumerate(pred[vid][seg]['clss']):
-                    if class_name in idx_in_sent:
-                        gt_idx = min(idx_in_sent[class_name]) # always consider the first match...
-                        sel_idx = [idx for idx, i in enumerate(ann['process_idx']) if gt_idx in i]
-                        ref_bbox = ref_bbox_all[sel_idx] # select matched boxes
-                        assert(ref_bbox.size(0) > 0)
-
-                        pred_bbox = torch.cat((torch.Tensor(pred[vid][seg]['bbox_for_all_frames'][pred_idx])[:,:4], \
-                            torch.Tensor(range(10)).unsqueeze(-1)), dim=1)
-
-                        frm_mask = torch.from_numpy(get_frm_mask(pred_bbox[:, 4].numpy(), \
-                            ref_bbox[:, 4].numpy()).astype('uint8'))
-                        overlap = bbox_overlaps_batch(pred_bbox[:, :5].unsqueeze(0), \
-                            ref_bbox[:, :5].unsqueeze(0), frm_mask.unsqueeze(0))
-                        prec[class_name].append(1 if torch.max(overlap) > self.iou_thresh else 0)
-                    elif json.loads(nlp.annotate(class_name, properties=props))['sentences'][0]['tokens'][0]['lemma'] in exclude_obj:
-                        pass # do not penalize if gt object word not annotated (missed)
-                    else:
-                        if mode == 'all':
-                            prec[class_name].append(0) # hallucinated object
-
-        nlp.close()
-
-        # recall
-        recall = defaultdict(list)
-        for vid, anns in ref.items():
-            for seg, ann in anns['segments'].items():
-                if len(ann['frame_ind']) == 0:
-                    # print('no annotation available')
-                    continue
-
-                ref_bbox_all = torch.cat((torch.Tensor(ann['process_bnd_box']), \
-                    torch.Tensor(ann['frame_ind']).unsqueeze(-1)), dim=1) # 5-D coordinates
-                sent_idx = set(itertools.chain.from_iterable(ann['process_idx'])) # index of gt object words
-
-                for gt_idx in sent_idx:
-                    sel_idx = [idx for idx, i in enumerate(ann['process_idx']) if gt_idx in i]
-                    ref_bbox = ref_bbox_all[sel_idx] # select matched boxes
-                    # Note that despite discouraged, a single word could be annotated across multiple boxes/frames
-                    assert(ref_bbox.size(0) > 0)
-
-                    class_name = ann['process_clss'][sel_idx[0]][ann['process_idx'][sel_idx[0]].index(gt_idx)]
-                    if vid not in pred:
-                        recall[class_name].append(0) # video not grounded
-                    elif seg not in pred[vid]:
-                        recall[class_name].append(0) # segment not grounded
-                    elif class_name in pred[vid][seg]['clss']:
-                        pred_idx = pred[vid][seg]['clss'].index(class_name) # always consider the first match...
-                        pred_bbox = torch.cat((torch.Tensor(pred[vid][seg]['bbox_for_all_frames'][pred_idx])[:,:4], \
-                            torch.Tensor(range(10)).unsqueeze(-1)), dim=1)
-
-                        frm_mask = torch.from_numpy(get_frm_mask(pred_bbox[:, 4].numpy(), \
-                            ref_bbox[:, 4].numpy()).astype('uint8'))
-                        overlap = bbox_overlaps_batch(pred_bbox[:, :5].unsqueeze(0), \
-                            ref_bbox[:, :5].unsqueeze(0), frm_mask.unsqueeze(0))
-                        recall[class_name].append(1 if torch.max(overlap) > self.iou_thresh else 0)
-                    else:
-                        if mode == 'all':
-                            recall[class_name].append(0) # object not grounded
-
-        num_vocab = len(vocab_in_split)
-        print('Number of groundable objects in this split: {}'.format(num_vocab))
-        print('Number of objects in prec and recall: {}, {}'.format(len(prec), len(recall)))
-        prec_accu = np.sum([sum(hm)*1./len(hm) for i,hm in prec.items()])*1./num_vocab
-        recall_accu = np.sum([sum(hm)*1./len(hm) for i,hm in recall.items()])*1./num_vocab
-        f1 = 2. * prec_accu * recall_accu / (prec_accu + recall_accu)
-
-        print('-' * 80)
-        print('The overall precision_{0} / recall_{0} / F1_{0} are {1:.4f} / {2:.4f} / {3:.4f}'.format(mode, prec_accu, recall_accu, f1))
-        print('-' * 80)
-        if self.verbose:
-            print('Object frequency and grounding accuracy per class (descending by object frequency):')
-            accu_per_clss = {}
-            for i in vocab_in_split:
-                prec_clss = sum(prec[i])*1./len(prec[i]) if i in prec else 0
-                recall_clss = sum(recall[i])*1./len(recall[i]) if i in recall else 0
-                accu_per_clss[(i, prec_clss, recall_clss)] = (len(prec[i]), len(recall[i]))
-            accu_per_clss = sorted(accu_per_clss.items(), key=lambda x:x[1][1], reverse=True)
-            for accu in accu_per_clss:
-                print('{} ({} / {}): {:.4f} / {:.4f}'.format(accu[0][0], accu[1][0], accu[1][1], accu[0][1], accu[0][2]))
-
-        return prec_accu, recall_accu, f1
-
-
-    def precision_recall_per_video(self, mode='all'):
-        ref = self.ref
-        pred = self.pred
-        print('Number of videos in the reference: {}, number of videos in the submission: {}'.format(len(ref), len(pred)))
-
-        if is_code_development():
-            nlp = StanfordCoreNLP('http://localhost', port=9000)
-        else:
-            nlp = StanfordCoreNLP('tools/stanford-corenlp-full-2018-02-27')
-        props={'annotators': 'lemma','pipelineLanguage':'en', 'outputFormat':'json'}
-
-        vocab_in_split = set()
-        prec = defaultdict(list)
-        prec_per_video = defaultdict(list)
-
-        for vid, anns in tqdm(ref.items()):  # for each video
             for seg, ann in anns['segments'].items():
 
                 if len(ann['frame_ind']) == 0 or vid not in pred or seg not in pred[vid]:
                         continue # do not penalize if sentence not annotated
                 
-                prec_per_video_tmp = []
+                prec_per_sent_tmp = [] # for each sentence
 
                 ref_bbox_all = torch.cat((torch.Tensor(ann['process_bnd_box']),
                                           torch.Tensor(ann['frame_ind']).unsqueeze(-1)), dim=1)  # 5-D coordinates
@@ -288,28 +163,28 @@ class ANetGrdEval(object):
                         overlap = bbox_overlaps_batch(pred_bbox[:, :5].unsqueeze(0),
                                                       ref_bbox[:, :5].unsqueeze(0), frm_mask.unsqueeze(0))
                         prec[class_name].append(1 if torch.max(overlap) > self.iou_thresh else 0)
-                        prec_per_video_tmp.append(1 if torch.max(overlap) > self.iou_thresh else 0)
+                        prec_per_sent_tmp.append(1 if torch.max(overlap) > self.iou_thresh else 0)
                     elif json.loads(nlp.annotate(class_name, properties=props))['sentences'][0]['tokens'][0]['lemma'] in exclude_obj:
                         pass  # do not penalize if gt object word not annotated (missed)
                     else:
                         if mode == 'all':
                             prec[class_name].append(0)  # hallucinated object
-                            prec_per_video_tmp.append(0)
+                            prec_per_sent_tmp.append(0)
 
-                prec_per_video[vid + seg] = prec_per_video_tmp
+                prec_per_sent[vid + seg] = prec_per_sent_tmp
 
         nlp.close()
 
         # recall
         recall = defaultdict(list)
-        recall_per_video = defaultdict(list)
+        recall_per_sent = defaultdict(list)
         for vid, anns in ref.items():
             for seg, ann in anns['segments'].items():
                 if len(ann['frame_ind']) == 0:
                     # print('no annotation available')
                     continue
 
-                recall_per_video_tmp = []
+                recall_per_sent_tmp = [] # for each sentence
 
                 ref_bbox_all = torch.cat((torch.Tensor(ann['process_bnd_box']), \
                     torch.Tensor(ann['frame_ind']).unsqueeze(-1)), dim=1) # 5-D coordinates
@@ -324,10 +199,10 @@ class ANetGrdEval(object):
                     class_name = ann['process_clss'][sel_idx[0]][ann['process_idx'][sel_idx[0]].index(gt_idx)]
                     if vid not in pred:
                         recall[class_name].append(0) # video not grounded
-                        recall_per_video_tmp.append(0)
+                        recall_per_sent_tmp.append(0)
                     elif seg not in pred[vid]:
                         recall[class_name].append(0) # segment not grounded
-                        recall_per_video_tmp.append(0)
+                        recall_per_sent_tmp.append(0)
                     elif class_name in pred[vid][seg]['clss']:
                         pred_idx = pred[vid][seg]['clss'].index(class_name) # always consider the first match...
                         pred_bbox = torch.cat((torch.Tensor(pred[vid][seg]['bbox_for_all_frames'][pred_idx])[:,:4], \
@@ -338,17 +213,18 @@ class ANetGrdEval(object):
                         overlap = bbox_overlaps_batch(pred_bbox[:, :5].unsqueeze(0), \
                             ref_bbox[:, :5].unsqueeze(0), frm_mask.unsqueeze(0))
                         recall[class_name].append(1 if torch.max(overlap) > self.iou_thresh else 0)
-                        recall_per_video_tmp.append(1 if torch.max(overlap) > self.iou_thresh else 0)
+                        recall_per_sent_tmp.append(1 if torch.max(overlap) > self.iou_thresh else 0)
                     else:
                         if mode == 'all':
                             recall[class_name].append(0) # object not grounded
-                            recall_per_video_tmp.append(0)
+                            recall_per_sent_tmp.append(0)
 
-                recall_per_video[vid + seg] = recall_per_video_tmp
+                recall_per_sent[vid + seg] = recall_per_sent_tmp
 
-        return prec_per_video, recall_per_video
+        return prec, recall, prec_per_sent, recall_per_sent, vocab_in_split
 
-    def grd_eval_per_video(self, mode='all'):
+
+    def grd_eval(self, mode='all'):
         if mode == 'all':
             print('Evaluating on all object words.')
         elif mode == 'loc':
@@ -356,27 +232,49 @@ class ANetGrdEval(object):
         else:
             raise Exception('Invalid loc mode!')
 
-        prec_per_video, rec_per_video = self.precision_recall_per_video(mode=mode)
+        prec, recall, prec_per_sent, rec_per_sent, vocab_in_split = self.precision_recall_util(mode=mode)
 
-        # compute the precision, recall, and F1 scores
+        # compute the per-class precision, recall, and F1 scores
+        num_vocab = len(vocab_in_split)
+        print('Number of groundable objects in this split: {}'.format(num_vocab))
+        print('Number of objects in prec and recall: {}, {}'.format(len(prec), len(recall)))
+        prec_accu = np.sum([sum(hm)*1./len(hm) for i,hm in prec.items()])*1./num_vocab
+        recall_accu = np.sum([sum(hm)*1./len(hm) for i,hm in recall.items()])*1./num_vocab
+        f1 = 2. * prec_accu * recall_accu / (prec_accu + recall_accu)
+
+        print('-' * 80)
+        print('The overall precision_{0} / recall_{0} / F1_{0} are {1:.4f} / {2:.4f} / {3:.4f}'.format(mode, prec_accu, recall_accu, f1))
+        print('-' * 80)
+        if self.verbose:
+            print('Object frequency and grounding accuracy per class (descending by object frequency):')
+            accu_per_clss = {}
+            for i in vocab_in_split:
+                prec_clss = sum(prec[i])*1./len(prec[i]) if i in prec else 0
+                recall_clss = sum(recall[i])*1./len(recall[i]) if i in recall else 0
+                accu_per_clss[(i, prec_clss, recall_clss)] = (len(prec[i]), len(recall[i]))
+            accu_per_clss = sorted(accu_per_clss.items(), key=lambda x:x[1][1], reverse=True)
+            for accu in accu_per_clss:
+                print('{} ({} / {}): {:.4f} / {:.4f}'.format(accu[0][0], accu[1][0], accu[1][1], accu[0][1], accu[0][2]))
+
+        # compute the per-sent precision, recall, and F1 scores
         num_video_without_labels = 0
         prec, rec, f1 = [], [], []
-        for video_id, prec_list in prec_per_video.items():
+        for video_id, prec_list in prec_per_sent.items():
 
-            if prec_list == [] or rec_per_video[video_id] == []:  
+            if rec_per_sent[video_id] == []:
             # if this is empty, it means the video does not have 
             # annotated object words
                 num_video_without_labels += 1
             else:
-                current_prec = np.mean(prec_list)
-                current_rec = np.mean(rec_per_video[video_id])
+                current_prec = 0 if prec_list == [] else np.mean(prec_list) # avoid empty prec_list
+                current_rec = np.mean(rec_per_sent[video_id])
 
                 # if precision and recall are both 0, set the f1 to be 0
                 # similar to the evaluation metric concept of GVD
                 if current_prec == 0.0 and current_rec == 0.0:
                     current_f1_score = 0.0
                 else:
-                    current_f1_score = 2. * current_prec * current_rec / (current_prec + current_rec)
+                    current_f1_score = 2. * current_prec * current_rec / (current_prec + current_rec) # per-sent F1
 
                 prec.append(current_prec)
                 rec.append(current_rec)
@@ -397,7 +295,7 @@ class ANetGrdEval(object):
         print('The overall precision_{0}_per_sent / recall_{0}_per_sent / F1_{0}_per_sent are {1:.4f} / {2:.4f} / {3:.4f}'.format(mode, avg_prec, avg_rec, avg_f1))
         print('-' * 80)
 
-        return avg_prec, avg_rec, avg_f1
+        return prec_accu, recall_accu, f1, avg_prec, avg_rec, avg_f1
 
 
 def main(args):
