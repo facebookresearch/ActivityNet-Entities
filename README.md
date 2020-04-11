@@ -12,25 +12,59 @@ ActivityNet-Entities, is based on the video description dataset [ActivityNet Cap
 ## <a name="aeol"></a>ActivityNet Entities Object Localization Challenge 2020
 **The winners will be announced at ActivityNet Challenge at CVPR 2020 (June 14th). Prizes are to be decided.**
 
+(A simplified version of the info below could be found in the ANet-Entities challenge [page](http://activity-net.org/challenges/2020/tasks/guest_anet_eol.html))
+
 ### Important dates
 Note that these dates are tentative and subject to changes if necessary.
-- March 2: public Train/Val/Test sets are available; participants can start training.
-- April 13: release Hidden Test set with ground truth withheld and open evaluation server.
-- May 22: public the leaderboard.
-- May 29: close evaluation server.
+- March 2: Public Train/Val/Test sets are available; participants can start training.
+- April 13: Release Hidden Test set with ground truth withheld and open evaluation server.
+- May 22: Public the leaderboard.
+- May 29: Close evaluation server.
 - June 2: Deadline for submitting the report.
-- June 14: a full-day workshop at CVPR 2020.
+- June 14: A full-day workshop at CVPR 2020.
 
-### Challenge details
-For general challenge descriptions, refer to the official ANet-Entities Challenge [page](http://activity-net.org/challenges/2020/tasks/guest_anet_eol.html).
+### Challenge overview
+ActivityNet-Entities Object Localization Task aims to evaluate how grounded or faithful a description (could be generated or ground-truth) is to the video they describe.
+
+An object word is first identified in the description and then localized in the video in the form of a spatial bounding box. The prediction is compared against the human annotation to determine the correctness and overall localization accuracy.
+
+### Dataset overview
+ActivityNet-Entities is based on the video description dataset ActivityNet Captions and augments it with 158k bounding box annotations, each grounding a noun phrase (NP). In this challenge, we will use pre-processed object-based annotations that link individual object words to their corresponding regions in the video. This gives 432 unique object categories.
+
+The original dataset consists of 10k/2.5k/2.5k videos for training/validation/testing. There are 35k/8.6k/8.5k event segments & sentence descriptions and 105k/26.5k/26.1k bounding box annotations on each split. We have further collected a new hidden test set where the video descriptions are not public. This enables us to evaluate both video description quality and object localization quality.
 
 The annotations on the training and validation set is in `data/anet_entities_cleaned_class_thresh50_trainval.json`. `data/anet_entities_skeleton.txt` specifies the JSON file structure on both reference files and submission files.
 
-For Sub-task I, we will use the **public** test set. The skeleton of the file is in `data/anet_entities_cleaned_class_thresh50_test_skeleton.json`, where we intentionally leave out the bounding box annotation for official evaluation purposes.
+Depending on the availability of the video description during inference, we divide the challenge into two sub-tasks:
 
-For Sub-task II, we will use the **hidden** test set (available around April 6th). No video descripitions nor bounding boxes for this split will be provided.
+Sub-task I: Grounding on GT Sentences (**public** test set). The same data as in the Activity-Entities test set, which comes from ActivityNet Captions val set. The skeleton of the file is in `data/anet_entities_cleaned_class_thresh50_test_skeleton.json`, where we intentionally leave out the bounding box annotation for official evaluation purposes. GT sentences are provided.
 
-The evaluation script used in our evaluation server will be identical to `scripts/eval_grd_anet_entities.py`. Read the following section for more details.
+Sub-task II: Grounding on Generated Sentences (**hidden** test set). GT sentences are NOT provided and hence both user sentence prediction and grounding prediction are required for evaluation. The skeleton of the file is in `data/anet_entities_cleaned_class_thresh50_hidden_test_skeleton.json`, where no video description nor bounding box is provided.
+
+Regarding the format of the bounding box annotation, we first uniformly sample 10 frames from each event segment and sparsely locate objects from the description in only one of the frames where the object can be clearly observed.
+
+### Evaluation metrics
+Due to the sparsity of the annotation, we request all participants to submit the localization results on all object categories appearing in the target sentence on all 10 sampled frames. Only the prediction at the same frame as the GT annotation will be assessed and compared against the human annotation to determine the correctness (>50% IoU indicates correct and otherwise incorrect). Localization accuracy is computed per object category and then averaged by the number of unique object categories.
+
+The evaluation metric used in Sub-task I is Localization Accuracy (with 50% IoU threshold). We have benchmarked the baseline methods below (averaged over three runs).
+
+| **Method** | **Localization Accuracy** |
+|-----|-----------------------|
+| GVD | 43.45% |
+
+The evaluation metrics used in Sub-task II include F1\_all, F1\_loc, F1\_all\_per\_sent, and F1\_loc\_per\_sent (all with 50% IoU threshold). We have benchmarked the baseline methods below (averaged over three runs).
+
+| **Method** | **F1\_all\_per\_sent** | F1\_loc\_per\_sent | F1\_all | F1\_loc |
+|-----|-----------------|-----------------|--------|--------|
+| GVD | ** ** |  | 7.46% | 22.88% |
+
+(Important!) F1\_all, and F1\_loc are proposed as the official metrics in [Zhou et al. CVPR 2019] https://arxiv.org/pdf/1812.06587.pdf. In F1\_all, a region prediction is considered correct if the object word is correctly predicted and also correctly localized. In F1\_loc, we only consider correctly-predicted object words, i.e., language generation error (e.g., hallucinated objects) is ignored. However, as both metrics average accuracies over object categories, they emphasize unproportionally on description diversity, as object classes never predicted will have zero accuracy and reduce overall metric numbers. In fact, in the baseline method GVD, only about half of the object categories are predicted (that’s why we see a low F1\_all score). Hacks such as increasing accuracies on the long-tail classes will significantly improve the metric scores which is not exactly the purpose of the challenge. **Therefore, we propose two more metrics for this sub-task, F1\_all\_per\_sent  and F1\_loc\_per\_sent, where the accuracies are averaged over all the sentences.** Note that none of the four metrics are perfect, but at least give us a holistic view of the system performance. More details on evaluation metrics are in Sec. 5.1 and A.2 in [Zhou et al. CVPR 2019] https://arxiv.org/pdf/1812.06587.pdf. The evaluation script (same as in the evaluation server) is available at https://github.com/facebookresearch/ActivityNet-Entities#evaluation.
+
+**To determine the winner, we adopt the highest score on Localization Accuracy on Sub-task I and the highest score on F1\_all\_per\_sent on Sub-task II.**
+
+A visual demonstration of F1\_all and F1\_loc is shown below. The evaluation script used in our evaluation server will be identical to `scripts/eval_grd_anet_entities.py`. Read the following [section](#eval) for more details.
+
+<img src='demo/f1_scores.png' alt="f1 scores" width="80%"/>
 
 
 ## General Dataset Info
@@ -39,13 +73,14 @@ We have the following dataset files under the `data` directory:
 
 - `anet_entities_skeleton.txt`: Specify the expected structure of the JSON annotation files.
 - `anet_entities_cleaned_class_thresh50_trainval.json`: Pre-processed dataset file with object class and bounding box annotations. For training and validation splits only.
-- `anet_entities_cleaned_class_thresh50_test_skeleton.json`: Object class annotation for the **public** testing split. This file is for evaluation server purpose and the bounding box annotation is not given. See below for more details.
+- `anet_entities_cleaned_class_thresh50_test_skeleton.json`: Object class annotation for the **public** testing split. This file is for evaluation server purpose and no bounding box annotation is given.
+- `anet_entities_cleaned_class_thresh50_hidden_test_skeleton.json`: Object class annotation for the **hidden** testing split. This file is for evaluation server purpose and no description nor bounding box annotation is given.
 - `anet_entities_trainval.json`: The raw dataset file with noun phrase and bounding box annotations. We only release the training and the validation splits for now.
-- `split_ids_anet_entities.json`: Video IDs included in the training/validation/**public** testing splits.
+- `split_ids_anet_entities.json`: Video IDs included in the training/validation/**public** testing/**hidden** testing splits.
 
 Note: Both the raw dataset file and the pre-processed dataset file contain all the 12469 videos in our training and validation split (training + one half of the validation split as in ActivityNet Captions, which is based on [ActivityNet 1.3](http://activity-net.org/download.html)). This includes 626 videos without box annotations.
 
-### Evaluation
+###  <a name="eval"></a>Evaluation
 Under the `scripts` directory, we include:
 
 - `eval_grd_anet_entities.py`: The evaluation script for object grounding on GT/generated captions. [PyTorch (tested on 1.1 and 1.3)](https://pytorch.org/get-started/locally/), [Stanford CoreNLP 3.9.1](https://stanfordnlp.github.io/CoreNLP/history.html) and the [Python wrapper](https://github.com/Lynten/stanford-corenlp) are required.
@@ -63,7 +98,7 @@ python scripts/eval_grd_anet_entities.py -s YOUR_SUBMISSION_FILE.JSON --eval_mod
 ```
 where setting `loc_mode=all` to perform evaluation on all object words while setting `loc_mode=loc` to perform evaluation only on correctly-predicted object words.
 
-We provide a Codalab evaluation [server](https://competitions.codalab.org/competitions/20537) for the validation set. The evaluation on the **public** test set is available now until ECCV deadline and will be temporarily closed afterwards. The server will reopen on both test sets around April 13th. Please follow the example in `data/anet_entities_skeleton.txt` to format your submission file.
+We provide a Codalab evaluation [server](https://competitions.codalab.org/competitions/20537) for the validation set. The server on both test sets will open on April 13th. Please follow the example in `data/anet_entities_skeleton.txt` to format your submission file.
 
 ### FAQs
 1. How are the 10 frames sampled from each video clip (event)?
@@ -72,7 +107,7 @@ We provide a Codalab evaluation [server](https://competitions.codalab.org/compet
 
 2. How can I sample the frames by myself and extract feature?
 
-   First, you may want to check if the region feature and RGB/motion frame-wise feature we [provided](https://github.com/facebookresearch/grounded-video-description#data-preparation) meet your requirement.
+   First, you may want to check if the object region feature and RGB/motion frame-wise feature we [provided](https://github.com/facebookresearch/grounded-video-description#data-preparation) meet your requirement.
    If not, you can first download the ActivityNet videos using this [web crawler](https://github.com/activitynet/ActivityNet/blob/master/Crawler/fetch_activitynet_videos.sh) or contact the dataset [owners](http://activity-net.org/people.html) for help. An incorrect video encoding format would result in a wrong frame resolution and aspect ratio, and therefore a mismatch in the annotation. Hence, make sure you download the videos in the [best mp4 format](https://github.com/activitynet/ActivityNet/blob/master/Crawler/run_crosscheck.py#L32).  
    Once you have the videos, you can use `ffmpeg` to extract the frames. We provide an example command [here](https://github.com/facebookresearch/ActivityNet-Entities/issues/1#issuecomment-529065386).
 
