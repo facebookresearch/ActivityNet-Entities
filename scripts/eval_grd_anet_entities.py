@@ -238,12 +238,12 @@ class ANetGrdEval(object):
         num_vocab = len(vocab_in_split)
         print('Number of groundable objects in this split: {}'.format(num_vocab))
         print('Number of objects in prec and recall: {}, {}'.format(len(prec), len(recall)))
-        prec_accu = np.sum([sum(hm)*1./len(hm) for i,hm in prec.items()])*1./num_vocab
-        recall_accu = np.sum([sum(hm)*1./len(hm) for i,hm in recall.items()])*1./num_vocab
-        f1 = 2. * prec_accu * recall_accu / (prec_accu + recall_accu)
+        prec_cls = np.sum([sum(hm)*1./len(hm) for i,hm in prec.items()])*1./num_vocab
+        recall_cls = np.sum([sum(hm)*1./len(hm) for i,hm in recall.items()])*1./num_vocab
+        f1_cls = 2. * prec_cls * recall_cls / (prec_cls + recall_cls)
 
         print('-' * 80)
-        print('The overall precision_{0} / recall_{0} / F1_{0} are {1:.4f} / {2:.4f} / {3:.4f}'.format(mode, prec_accu, recall_accu, f1))
+        print('The overall precision_{0} / recall_{0} / F1_{0} are {1:.4f} / {2:.4f} / {3:.4f}'.format(mode, prec_cls, recall_cls, f1_cls))
         print('-' * 80)
         if self.verbose:
             print('Object frequency and grounding accuracy per class (descending by object frequency):')
@@ -257,20 +257,18 @@ class ANetGrdEval(object):
                 print('{} ({} / {}): {:.4f} / {:.4f}'.format(accu[0][0], accu[1][0], accu[1][1], accu[0][1], accu[0][2]))
 
         # compute the per-sent precision, recall, and F1 scores
-        num_video_without_labels = 0
+        num_segment_without_labels = 0
         prec, rec, f1 = [], [], []
-        for video_id, prec_list in prec_per_sent.items():
+        for seg_id, prec_list in prec_per_sent.items():
 
-            if rec_per_sent[video_id] == []:
-            # if this is empty, it means the video does not have 
-            # annotated object words
-                num_video_without_labels += 1
+            if rec_per_sent[seg_id] == []:
+                # skip the segment if no target objects
+                num_segment_without_labels += 1
             else:
                 current_prec = 0 if prec_list == [] else np.mean(prec_list) # avoid empty prec_list
-                current_rec = np.mean(rec_per_sent[video_id])
+                current_rec = np.mean(rec_per_sent[seg_id])
 
                 # if precision and recall are both 0, set the f1 to be 0
-                # similar to the evaluation metric concept of GVD
                 if current_prec == 0.0 and current_rec == 0.0:
                     current_f1_score = 0.0
                 else:
@@ -281,21 +279,19 @@ class ANetGrdEval(object):
                 f1.append(current_f1_score)
 
         num_predictions = 0
-        for _, pred_vid in self.pred.items():
-            num_predictions += len(pred_vid)
+        for _, pred_seg in self.pred.items():
+            num_predictions += len(pred_seg)
 
-        # We divide the scores with the total number of predictions
-        # this is particularly for 'loc' since it might have no record of 
-        # precision or recall and in that case, their scores should be 0.
-        avg_prec = np.sum(prec) / (num_predictions - num_video_without_labels)
-        avg_rec = np.sum(rec) / (num_predictions - num_video_without_labels)
-        avg_f1 = np.sum(f1) / (num_predictions - num_video_without_labels)
+        # divide the scores with the total number of predictions
+        avg_prec = np.sum(prec) / (num_predictions - num_segment_without_labels)
+        avg_rec = np.sum(rec) / (num_predictions - num_segment_without_labels)
+        avg_f1 = np.sum(f1) / (num_predictions - num_segment_without_labels)
 
         print('-' * 80)
         print('The overall precision_{0}_per_sent / recall_{0}_per_sent / F1_{0}_per_sent are {1:.4f} / {2:.4f} / {3:.4f}'.format(mode, avg_prec, avg_rec, avg_f1))
         print('-' * 80)
 
-        return prec_accu, recall_accu, f1, avg_prec, avg_rec, avg_f1
+        return prec_cls, recall_cls, f1_cls, avg_prec, avg_rec, avg_f1
 
 
 def main(args):

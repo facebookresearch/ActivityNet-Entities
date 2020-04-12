@@ -1,13 +1,6 @@
 # ActivityNet Entities Dataset and Challenge 2020
 
-### [ActivityNet Entities Object Localization (Grounding) Challenge](http://activity-net.org/challenges/2020/tasks/guest_anet_eol.html) joins the official [ActivityNet Challenge](http://activity-net.org/challenges/2020/challenge.html) as a guest task this year! See [below](#aeol) for details.
-
-This repo hosts the dataset and evaluation scripts used in our paper [Grounded Video Description](https://arxiv.org/abs/1812.06587) (GVD). **We also released the source code of GVD in this [repo](https://github.com/facebookresearch/grounded-video-description).**
-
-ActivityNet-Entities, is based on the video description dataset [ActivityNet Captions](https://cs.stanford.edu/people/ranjaykrishna/densevid/) and augments it with 158k bounding box annotations, each grounding a noun phrase (NP). Here we release the complete set of NP-based annotations as well as the pre-processed object-based annotations.
-
-<img src='demo/dataset_teaser.png' alt="dataset teaser" width="80%"/>
-
+### [ActivityNet Entities Object Localization (Grounding) Challenge](http://activity-net.org/challenges/2020/tasks/guest_anet_eol.html) joins the official [ActivityNet Challenge](http://activity-net.org/challenges/2020/challenge.html) this year! Looking forward to seeing you at CVPR'20!
 
 ## <a name="aeol"></a>ActivityNet Entities Object Localization Challenge 2020
 **The winners will be announced at ActivityNet Challenge at CVPR 2020 (June 14th). Prizes are to be decided.**
@@ -27,6 +20,8 @@ Note that these dates are tentative and subject to changes if necessary.
 ActivityNet-Entities Object Localization Task aims to evaluate how grounded or faithful a description (could be generated or ground-truth) is to the video they describe.
 
 An object word is first identified in the description and then localized in the video in the form of a spatial bounding box. The prediction is compared against the human annotation to determine the correctness and overall localization accuracy.
+
+<img src='demo/dataset_teaser.png' alt="dataset teaser" width="80%"/>
 
 ### Dataset overview
 ActivityNet-Entities is based on the video description dataset ActivityNet Captions and augments it with 158k bounding box annotations, each grounding a noun phrase (NP). In this challenge, we will use pre-processed object-based annotations that link individual object words to their corresponding regions in the video. This gives 432 unique object categories.
@@ -57,13 +52,13 @@ The evaluation metric used in Sub-task I is Localization Accuracy (with 50% IoU 
 
 | **Method** | **Localization Accuracy** |
 |-----|-----------------------|
-| GVD | 43.45% |
+| [GVD](https://github.com/facebookresearch/grounded-video-description) | 43.45% |
 
 The evaluation metrics used in Sub-task II include F1\_all, F1\_loc, F1\_all\_per\_sent, and F1\_loc\_per\_sent (all with 50% IoU threshold). We have benchmarked the baseline methods below (averaged over three runs).
 
 | **Method** | **F1\_all\_per\_sent** | F1\_loc\_per\_sent | F1\_all | F1\_loc |
 |-----|-----------------|-----------------|--------|--------|
-| GVD | **17.26%** | 58.57% | 7.46% | 22.88% |
+| [GVD](https://github.com/facebookresearch/grounded-video-description) | **17.26%** | 58.57% | 7.46% | 22.88% |
 
 (Important!) F1\_all, and F1\_loc are proposed as the official metrics in [Zhou et al. CVPR 2019](https://arxiv.org/pdf/1812.06587.pdf). In F1\_all, a region prediction is considered correct if the object word is correctly predicted and also correctly localized. In F1\_loc, we only consider correctly-predicted object words, i.e., language generation error (e.g., hallucinated objects) is ignored. However, as both metrics average accuracies over object categories, they emphasize unproportionally on description diversity, as object classes never predicted will have zero accuracy and reduce overall metric numbers. In fact, in the baseline method GVD, only about half of the object categories are predicted (that’s why we see a low F1\_all score). Hacks such as increasing accuracies on the long-tail classes will significantly improve the metric scores which is not exactly the purpose of the challenge. **Therefore, we propose two more metrics for this sub-task, F1\_all\_per\_sent  and F1\_loc\_per\_sent, where the accuracies are averaged over all the sentences.** Note that none of the four metrics are perfect, but at least give us a holistic view of the system performance. More details on evaluation metrics are in Sec. 5.1 and A.2 in [Zhou et al. CVPR 2019](https://arxiv.org/pdf/1812.06587.pdf). The evaluation script (same as in the evaluation server) is available at https://github.com/facebookresearch/ActivityNet-Entities#evaluation.
 
@@ -74,13 +69,17 @@ A visual demonstration of F1\_all and F1\_loc is shown below. The evaluation scr
 <img src='demo/f1_scores.png' alt="f1 scores" width="60%"/>
 
 ### Evaluation servers
-For Sub-task I - GT Captions: https://competitions.codalab.org/competitions/20537
+For Sub-task I - GT Captions: https://competitions.codalab.org/competitions/24336
 
 For Sub-task II - Generated Captions: https://competitions.codalab.org/competitions/24334
 
 Please follow the example in `data/anet_entities_skeleton.txt` to format your submission file.
 
 ## General Dataset Info
+This repo hosts the dataset and evaluation scripts used in our paper [Grounded Video Description](https://arxiv.org/abs/1812.06587) (GVD). **We also released the source code of GVD in this [repo](https://github.com/facebookresearch/grounded-video-description).**
+
+ActivityNet-Entities, is based on the video description dataset [ActivityNet Captions](https://cs.stanford.edu/people/ranjaykrishna/densevid/) and augments it with 158k bounding box annotations, each grounding a noun phrase (NP). Here we release the complete set of NP-based annotations as well as the pre-processed object-based annotations.
+
 ### Data
 We have the following dataset files under the `data` directory:
 
