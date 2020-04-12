@@ -1,9 +1,13 @@
-# ActivityNet Entities Dataset and Challenge 2020
+# ActivityNet Entities Dataset and Challenge
 
 ### [ActivityNet Entities Object Localization (Grounding) Challenge](http://activity-net.org/challenges/2020/tasks/guest_anet_eol.html) joins the official [ActivityNet Challenge](http://activity-net.org/challenges/2020/challenge.html) this year! Looking forward to seeing you at CVPR'20!
 
 ## <a name="aeol"></a>ActivityNet Entities Object Localization Challenge 2020
-**The winners will be announced at ActivityNet Challenge at CVPR 2020 (June 14th). Prizes are to be decided.**
+ActivityNet-Entities Object Localization Task aims to evaluate how grounded or faithful a description (could be generated or ground-truth) is to the video they describe.
+
+An object word is first identified in the description and then localized in the video in the form of a spatial bounding box. The prediction is compared against the human annotation to determine the correctness and overall localization accuracy.
+
+**Winners will be announced at ActivityNet Challenge at CVPR'20 (June 14th). Prizes are to be decided.**
 
 (A simplified version of the info below could be found in the ANet-Entities challenge [page](http://activity-net.org/challenges/2020/tasks/guest_anet_eol.html))
 
@@ -16,19 +20,16 @@ Note that these dates are tentative and subject to changes if necessary.
 - June 2: Deadline for submitting the report.
 - June 14: A full-day workshop at CVPR 2020.
 
-### Challenge overview
-ActivityNet-Entities Object Localization Task aims to evaluate how grounded or faithful a description (could be generated or ground-truth) is to the video they describe.
-
-An object word is first identified in the description and then localized in the video in the form of a spatial bounding box. The prediction is compared against the human annotation to determine the correctness and overall localization accuracy.
-
-<img src='demo/dataset_teaser.png' alt="dataset teaser" width="80%"/>
-
 ### Dataset overview
 ActivityNet-Entities is based on the video description dataset ActivityNet Captions and augments it with 158k bounding box annotations, each grounding a noun phrase (NP). In this challenge, we will use pre-processed object-based annotations that link individual object words to their corresponding regions in the video. This gives 432 unique object categories.
 
-The original dataset consists of 10k/2.5k/2.5k videos for training/validation/testing. There are 35k/8.6k/8.5k event segments & sentence descriptions and 105k/26.5k/26.1k bounding box annotations on each split. We have further collected a new **hidden** test set where the video descriptions are not public. This enables us to evaluate both video description quality and object localization quality.
+The original dataset consists of 10k/2.5k/2.5k videos for training/validation/testing. There are 35k/8.6k/8.5k event segments & sentence descriptions and 105k/26.5k/26.1k bounding box annotations on each split. We have further collected a new **hidden** test set where the video descriptions are not public. This enables us to reliably evaluate both video description quality and object localization quality.
 
 The annotation on the training and validation set is in `data/anet_entities_cleaned_class_thresh50_trainval.json`. `data/anet_entities_skeleton.txt` specifies the JSON file structure on both reference files and submission files.
+
+<img src='demo/dataset_teaser.png' alt="dataset teaser" width="60%"/>
+
+### Challenge overview
 
 Depending on the availability of the video description during inference, we divide the challenge into two sub-tasks:
 
