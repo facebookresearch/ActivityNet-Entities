@@ -40,9 +40,11 @@ Depending on the availability of the video description during inference, we divi
 Regarding the format of the bounding box annotation, we first uniformly sample 10 frames from each event segment and sparsely locate objects from the description in only one of the frames where the object can be clearly observed.
 
 ### Pre-extracted features
-For all four splits: [region features](https://dl.fbaipublicfiles.com/ActivityNet-Entities/ActivityNet-Entities/fc6_feat_100rois.tar.gz), [region coordinates](https://dl.fbaipublicfiles.com/ActivityNet-Entities/ActivityNet-Entities/anet_detection_vg_fc6_feat_100rois.h5).
+For public Train/Val/Test splits: [region features](https://dl.fbaipublicfiles.com/ActivityNet-Entities/ActivityNet-Entities/fc6_feat_100rois.tar.gz), [region coordinates](https://dl.fbaipublicfiles.com/ActivityNet-Entities/ActivityNet-Entities/anet_detection_vg_fc6_feat_100rois.h5).
 
-Note that the feature files are saved as individual *.npy files for legacy reasons.
+For the **hidden** Test split: TBD
+
+Note that the feature files are saved as individual *.npy files for legacy reasons. Consider merging them into batched *.h5 files (say 10-100) to speed up the data loading.
 
 The pre-extracted frames (10 per segment) are available on request. Please email [Luowei](mailto:luozhou@umich.edu) for details.
 
