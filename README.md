@@ -7,14 +7,14 @@ ActivityNet-Entities Object Localization Task aims to evaluate how grounded or f
 
 An object word is first identified in the description and then localized in the video in the form of a spatial bounding box. The prediction is compared against the human annotation to determine the correctness and overall localization accuracy.
 
-**Winners will be announced at ActivityNet Challenge at CVPR'20 (June 14th). Prizes are to be decided.**
+**Winners will be announced at ActivityNet Challenge at CVPR'20 (June 14th). Prizes :heavy_dollar_sign::heavy_dollar_sign::heavy_dollar_sign: are to be decided.**
 
 (A simplified version of the info below could be found in the ANet-Entities challenge [page](http://activity-net.org/challenges/2020/tasks/guest_anet_eol.html))
 
 ### Important dates
 Note that these dates are tentative and subject to changes if necessary.
 - March 2: Public Train/Val/Test sets are available; participants can start training.
-- April 13: Release Hidden Test set with ground truth withheld and open evaluation server.
+- April 15: Release Hidden Test set with ground truth withheld and open evaluation server.
 - May 22: Public the leaderboard.
 - May 29: Close evaluation server.
 - June 2: Deadline for submitting the report.
@@ -43,8 +43,6 @@ Regarding the format of the bounding box annotation, we first uniformly sample 1
 Here are download links to region features on the public Train/Val/Test [splits](https://dl.fbaipublicfiles.com/ActivityNet-Entities/ActivityNet-Entities/fc6_feat_100rois.tar.gz) and the **hidden** Test [split](https://dl.fbaipublicfiles.com/ActivityNet-Entities/ActivityNet-Entities/fc6_feat_100rois_hidden_test.tar.gz). The region coordinates for all splits are [here](https://dl.fbaipublicfiles.com/ActivityNet-Entities/ActivityNet-Entities/anet_detection_vg_fc6_feat_100rois.h5).
 
 Note that feature files are saved as individual *.npy files for legacy reasons. Consider merging them into batched *.h5 files (say 10-100) to speed up the data loading.
-
-The pre-extracted frames (10 per segment) are available on request. Please email [Luowei](mailto:luozhou@umich.edu) for details.
 
 ### Evaluation metrics
 Due to the sparsity of the annotation, we request all participants to submit the localization results on all object categories appearing in the target sentence on all 10 sampled frames. Only the prediction at the same frame as the GT annotation will be assessed and compared against the human annotation to determine the correctness (>50% IoU indicates correct and otherwise incorrect). Localization accuracy is computed per object category and then averaged by the number of unique object categories.
@@ -119,7 +117,7 @@ where setting `loc_mode=all` to perform evaluation on all object words while set
 2. How can I sample the frames by myself and extract feature?
 
    First, you may want to check if the object region feature and RGB/motion frame-wise feature we [provided](https://github.com/facebookresearch/grounded-video-description#data-preparation) meet your requirement.
-   If not, you can first download the ActivityNet videos using this [web crawler](https://github.com/activitynet/ActivityNet/blob/master/Crawler/fetch_activitynet_videos.sh) or contact the dataset [owners](http://activity-net.org/people.html) for help. An incorrect video encoding format would result in a wrong frame resolution and aspect ratio, and therefore a mismatch in the annotation. Hence, make sure you download the videos in the [best mp4 format](https://github.com/activitynet/ActivityNet/blob/master/Crawler/run_crosscheck.py#L32). Note that the web crawler is not appliable to the **hidden** test set as its video IDs are not YouTube IDs. Contact [Luowei](mailto:luozhou@umich.edu) to get these videos.
+   If not, you can first download the ActivityNet videos using this [web crawler](https://github.com/activitynet/ActivityNet/blob/master/Crawler/fetch_activitynet_videos.sh) or contact the dataset [owners](http://activity-net.org/people.html) for help. An incorrect video encoding format would result in a wrong frame resolution and aspect ratio, and therefore a mismatch in the annotation. Hence, make sure you download the videos in the [best mp4 format](https://github.com/activitynet/ActivityNet/blob/master/Crawler/run_crosscheck.py#L32). Note that the web crawler is not appliable to the **hidden** test set as its video IDs are not YouTube IDs. Contact [Luowei](mailto:luozhou@umich.edu) for details.
    Once you have the videos, you can use `ffmpeg` to extract the frames. We provide an example command [here](https://github.com/facebookresearch/ActivityNet-Entities/issues/1#issuecomment-529065386).
 
 ### Reference
@@ -134,7 +132,7 @@ Please contact <luozhou@umich.edu> if you have any trouble running the code. Ple
 ```
 
 ### Acknowledgement
-We thank Chih-Yao Ma for his helpful discussions and contribution to the code on evaluation metrics.
+We thank Chih-Yao Ma for his helpful discussions and contribution to the code on evaluation metrics. We also thank Elliot Klein for his contribution on the annotation collection interface.
 
 ### License
 This project is licensed under the license found in the LICENSE file in the root directory of this source tree.
