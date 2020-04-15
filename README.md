@@ -1,6 +1,6 @@
 # ActivityNet Entities Dataset and Challenge
 
-### [ActivityNet Entities Object Localization (Grounding) Challenge](http://activity-net.org/challenges/2020/tasks/guest_anet_eol.html) joins the official [ActivityNet Challenge](http://activity-net.org/challenges/2020/challenge.html) this year! Looking forward to seeing you at CVPR'20!
+### [ActivityNet Entities Object Localization (Grounding) Challenge](http://activity-net.org/challenges/2020/tasks/guest_anet_eol.html) joins the official [ActivityNet Challenge](http://activity-net.org/challenges/2020/challenge.html) <img src='demo/anet_challenge_logo.png' alt="anet challenge logo" width="50%"/> this year! Looking forward to seeing you at CVPR'20!
 
 ## <a name="aeol"></a>ActivityNet Entities Object Localization Challenge 2020
 ActivityNet-Entities Object Localization Task aims to evaluate how grounded or faithful a description (could be generated or ground-truth) is to the video they describe.
@@ -40,11 +40,9 @@ Depending on the availability of the video description during inference, we divi
 Regarding the format of the bounding box annotation, we first uniformly sample 10 frames from each event segment and sparsely locate objects from the description in only one of the frames where the object can be clearly observed.
 
 ### Pre-extracted features
-For public Train/Val/Test splits: [region features](https://dl.fbaipublicfiles.com/ActivityNet-Entities/ActivityNet-Entities/fc6_feat_100rois.tar.gz), [region coordinates](https://dl.fbaipublicfiles.com/ActivityNet-Entities/ActivityNet-Entities/anet_detection_vg_fc6_feat_100rois.h5).
+Here are download links to region features on the public Train/Val/Test [splits](https://dl.fbaipublicfiles.com/ActivityNet-Entities/ActivityNet-Entities/fc6_feat_100rois.tar.gz) and the **hidden** Test [split](https://dl.fbaipublicfiles.com/ActivityNet-Entities/ActivityNet-Entities/fc6_feat_100rois_hidden_test.tar.gz). The region coordinates for all splits are [here](https://dl.fbaipublicfiles.com/ActivityNet-Entities/ActivityNet-Entities/anet_detection_vg_fc6_feat_100rois.h5).
 
-For the **hidden** Test split: TBD
-
-Note that the feature files are saved as individual *.npy files for legacy reasons. Consider merging them into batched *.h5 files (say 10-100) to speed up the data loading.
+Note that feature files are saved as individual *.npy files for legacy reasons. Consider merging them into batched *.h5 files (say 10-100) to speed up the data loading.
 
 The pre-extracted frames (10 per segment) are available on request. Please email [Luowei](mailto:luozhou@umich.edu) for details.
 
@@ -63,7 +61,7 @@ The evaluation metrics used in Sub-task II include F1\_all, F1\_loc, F1\_all\_pe
 |-----|-----------------|-----------------|--------|--------|
 | [GVD](https://github.com/facebookresearch/grounded-video-description) | **17.26%** | 58.57% | 7.46% | 22.88% |
 
-(Important!) F1\_all, and F1\_loc are proposed as the official metrics in [Zhou et al. CVPR 2019](https://arxiv.org/pdf/1812.06587.pdf). In F1\_all, a region prediction is considered correct if the object word is correctly predicted and also correctly localized. In F1\_loc, we only consider correctly-predicted object words, i.e., language generation error (e.g., hallucinated objects) is ignored. However, as both metrics average accuracies over object categories, they emphasize unproportionally on description diversity, as object classes never predicted will have zero accuracy and reduce overall metric numbers. In fact, in the baseline method GVD, only about half of the object categories are predicted (that’s why we see a low F1\_all score). Hacks such as increasing accuracies on the long-tail classes will significantly improve the metric scores which is not exactly the purpose of the challenge. **We therefore adopt two additional metrics for this sub-task, F1\_all\_per\_sent  and F1\_loc\_per\_sent, where the accuracies are averaged over all the sentences.** Note that none of the four metrics are perfect, but at least give us a holistic view of the system performance. More details on evaluation metrics are in Sec. 5.1 and A.2 in [Zhou et al. CVPR 2019](https://arxiv.org/pdf/1812.06587.pdf). The evaluation script (same as in the evaluation server) is available at https://github.com/facebookresearch/ActivityNet-Entities#evaluation.
+(Important!) F1\_all, and F1\_loc are proposed as the official metrics in [Zhou et al. CVPR 2019](https://arxiv.org/pdf/1812.06587.pdf). In F1\_all, a region prediction is considered correct if the object word is correctly predicted and also correctly localized. In F1\_loc, we only consider correctly-predicted object words, i.e., language generation error (e.g., hallucinated objects) is ignored. However, as both metrics average accuracies over object categories, they emphasize unproportionally on description diversity, as object classes never predicted will have zero accuracy and reduce overall metric numbers. In fact, in the baseline method GVD, only about half of the object categories are predicted (that’s why we see a low F1\_all score). Hacks such as increasing accuracies on the long-tail classes will significantly improve the metric scores which is not exactly the purpose of the challenge. **We therefore adopt two additional metrics for this sub-task, F1\_all\_per\_sent  and F1\_loc\_per\_sent, where the accuracies are averaged over all the sentences.** Note that none of the four metrics are perfect, but at least give us a holistic view of the system performance. More details on evaluation metrics are in Sec. 5.1 and A.2 in [Zhou et al. CVPR 2019](https://arxiv.org/pdf/1812.06587.pdf).
 
 **To determine the winner, we adopt the highest score on Localization Accuracy on Sub-task I and the highest score on F1\_all\_per\_sent on Sub-task II.**
 

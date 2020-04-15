@@ -32,7 +32,11 @@ Format of JSON ActivityNet-Entities annotation files
         -> crowds: whether the box represents a group of objects
 
 ### an example on grounding evaluation subsmission files
-Evaluation server: https://competitions.codalab.org/competitions/22835
+Evaluation server on Challenge 2020:
+For Sub-task I - GT Captions: https://competitions.codalab.org/competitions/24336
+For Sub-task II - Generated Captions: https://competitions.codalab.org/competitions/24334
+
+Evaluation server (general): https://competitions.codalab.org/competitions/22835
 Submissions need to be named as submission_gt.json (for GT mode) or submission_gen.json (for gen mode) and zipped into a single submission.zip file.
 See instructions on the evaluation server for more details.
 ```
