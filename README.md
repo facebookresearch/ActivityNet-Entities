@@ -80,7 +80,7 @@ This repo hosts the dataset and evaluation scripts used in our paper [Grounded V
 ActivityNet-Entities, is based on the video description dataset [ActivityNet Captions](https://cs.stanford.edu/people/ranjaykrishna/densevid/) and augments it with 158k bounding box annotations, each grounding a noun phrase (NP). Here we release the complete set of NP-based annotations as well as the pre-processed object-based annotations.
 
 ### Data
-We have the following dataset files under the `data` directory. Note that for all splits, the video duration and segment timestamps info come from the original ActivityNet Captions (except for the **hidden** test set). They are available from the GVD [repo](https://github.com/facebookresearch/grounded-video-description#data-preparation) (download [link](https://dl.fbaipublicfiles.com/ActivityNet-Entities/ActivityNet-Entities/anet_entities_captions.tar.gz)) in the file named `anet_captions_all_splits.json`).
+We have the following dataset files under the `data` directory.
 
 - `anet_entities_skeleton.txt`: Specify the expected structure of the JSON annotation files.
 - `split_ids_anet_entities.json`: Video IDs included in the training/validation/public testing/**hidden** testing splits.
