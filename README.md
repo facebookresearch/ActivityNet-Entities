@@ -33,7 +33,7 @@ The annotation on the training and validation set is in `data/anet_entities_clea
 
 Depending on the availability of the video description during inference, we divide the challenge into two sub-tasks:
 
-**Sub-task I**: Grounding on **GT** Sentences (public test set). The same data as in the Activity-Entities test set, which comes from ActivityNet Captions val set. The skeleton of the file is in `data/anet_entities_cleaned_class_thresh50_test_skeleton.json`, where we intentionally leave out the bounding box annotation for official evaluation purposes. GT sentences are provided.
+**Sub-task I**: Grounding on **GT** Sentences (public test set). The same data as in the ANet-Entities test set, which comes from ActivityNet Captions val set. The skeleton of the file is in `data/anet_entities_cleaned_class_thresh50_test_skeleton.json`, where we intentionally leave out the bounding box annotation for official evaluation purposes. GT sentences are provided.
 
 **Sub-task II**: Grounding on **Generated** Sentences (**hidden** test set). GT sentences are NOT provided and hence both user sentence prediction and grounding prediction are required for evaluation. The skeleton of the file is in `data/anet_entities_cleaned_class_thresh50_hidden_test_skeleton.json`, where no video description nor bounding box is provided.
 
@@ -80,14 +80,14 @@ This repo hosts the dataset and evaluation scripts used in our paper [Grounded V
 ActivityNet-Entities, is based on the video description dataset [ActivityNet Captions](https://cs.stanford.edu/people/ranjaykrishna/densevid/) and augments it with 158k bounding box annotations, each grounding a noun phrase (NP). Here we release the complete set of NP-based annotations as well as the pre-processed object-based annotations.
 
 ### Data
-We have the following dataset files under the `data` directory:
+We have the following dataset files under the `data` directory. Note that for all splits, the video duration and segment timestamps info come from the original ActivityNet Captions (except for the **hidden** test set). They are available from the GVD [repo](https://github.com/facebookresearch/grounded-video-description#data-preparation) (download [link](https://dl.fbaipublicfiles.com/ActivityNet-Entities/ActivityNet-Entities/anet_entities_captions.tar.gz)) in the file named `anet_captions_all_splits.json`).
 
 - `anet_entities_skeleton.txt`: Specify the expected structure of the JSON annotation files.
+- `split_ids_anet_entities.json`: Video IDs included in the training/validation/public testing/**hidden** testing splits.
 - `anet_entities_cleaned_class_thresh50_trainval.json`: Pre-processed dataset file with object class and bounding box annotations. For training and validation splits only.
 - `anet_entities_cleaned_class_thresh50_test_skeleton.json`: Object class annotation for the public testing split. This file is for evaluation server purpose and no bounding box annotation is given.
-- `anet_entities_cleaned_class_thresh50_hidden_test_skeleton.json`: Object class annotation for the **hidden** testing split. This file is for evaluation server purpose and no description nor bounding box annotation is given. The duration and segment timestamps info are available from the GVD [repo](https://github.com/facebookresearch/grounded-video-description#data-preparation) (download [link](https://github.com/facebookresearch/grounded-video-description#data-preparation) to the file named `anet_captions_all_splits.json`).
+- `anet_entities_cleaned_class_thresh50_hidden_test_skeleton.json`: Object class annotation for the **hidden** testing split. This file is for evaluation server purpose and no description nor bounding box annotation is given.
 - `anet_entities_trainval.json`: The raw dataset file with noun phrase and bounding box annotations. We only release the training and the validation splits for now.
-- `split_ids_anet_entities.json`: Video IDs included in the training/validation/public testing/**hidden** testing splits.
 
 Note: Both the raw dataset file and the pre-processed dataset file contain all the 12469 videos in our training and validation split (training + one half of the validation split as in ActivityNet Captions, which is based on [ActivityNet 1.3](http://activity-net.org/download.html)). This includes 626 videos without box annotations.
 
