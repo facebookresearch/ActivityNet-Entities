@@ -7,7 +7,7 @@ ActivityNet-Entities Object Localization Task aims to evaluate how grounded or f
 
 An object word is first identified in the description and then localized in the video in the form of a spatial bounding box. The prediction is compared against the human annotation to determine the correctness and overall localization accuracy.
 
-**Winners will be announced at ActivityNet Challenge at CVPR'20 (June 14th). Prizes :heavy_dollar_sign::heavy_dollar_sign::heavy_dollar_sign: are to be decided.**
+**Winners will be announced at ActivityNet Challenge at CVPR'20 (June 14th). Prizes :heavy_dollar_sign::heavy_dollar_sign::heavy_dollar_sign: include $3500 cash award ($1500 for Sub-task I and $2000 for Sub-task II) + potentially cloud computing credits and subject to changes.**
 
 (A simplified version of the info below could be found in the ANet-Entities challenge [page](http://activity-net.org/challenges/2020/tasks/guest_anet_eol.html))
 
@@ -73,6 +73,7 @@ For Sub-task I - GT Captions: https://competitions.codalab.org/competitions/2433
 For Sub-task II - Generated Captions: https://competitions.codalab.org/competitions/24334
 
 Please follow the example in `data/anet_entities_skeleton.txt` to format your submission file.
+
 
 ## General Dataset Info
 This repo hosts the dataset and evaluation scripts used in our paper [Grounded Video Description](https://arxiv.org/abs/1812.06587) (GVD). **We also released the source code of GVD in this [repo](https://github.com/facebookresearch/grounded-video-description).**
