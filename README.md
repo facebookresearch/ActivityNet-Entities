@@ -121,6 +121,9 @@ where setting `loc_mode=all` to perform evaluation on all object words while set
    If not, you can first download the ActivityNet videos using this [web crawler](https://github.com/activitynet/ActivityNet/blob/master/Crawler/fetch_activitynet_videos.sh) or contact the dataset [owners](http://activity-net.org/people.html) for help. An incorrect video encoding format would result in a wrong frame resolution and aspect ratio, and therefore a mismatch in the annotation. Hence, make sure you download the videos in the [best mp4 format](https://github.com/activitynet/ActivityNet/blob/master/Crawler/run_crosscheck.py#L32). Note that the web crawler is not appliable to the **hidden** test set as its video IDs are not YouTube IDs. Contact [Luowei](mailto:luozhou@umich.edu) for details.
    Once you have the videos, you can use `ffmpeg` to extract the frames. We provide an example command [here](https://github.com/facebookresearch/ActivityNet-Entities/issues/1#issuecomment-529065386).
 
+### Additional resources
+Ma et al. "Learning to Generate Grounded Visual Captions without Localization Supervision." arXiv 2019. [paper](https://arxiv.org/abs/1906.00283)  [code](https://github.com/chihyaoma/cyclical-visual-captioning)
+
 ### Reference
 Please contact <luozhou@umich.edu> if you have any trouble running the code. Please cite the following paper if you use the dataset.
 ```
