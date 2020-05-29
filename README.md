@@ -16,8 +16,8 @@ Note that these dates are tentative and subject to changes if necessary.
 - March 2: Public Train/Val/Test sets are available; participants can start training.
 - April 15: Release Hidden Test set with ground truth withheld and open evaluation server.
 - May 22: Public the leaderboard.
-- May 29: Close evaluation server.
-- June 2: Deadline for submitting the report.
+- ~~May 29~~ **June 3 (extended)**: Close evaluation server.
+- ~~June 2~~ **June 5 (extended)**: Deadline for submitting the report.
 - June 14: A full-day workshop at CVPR 2020.
 
 ### Dataset overview
