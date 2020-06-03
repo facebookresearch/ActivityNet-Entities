@@ -7,7 +7,7 @@ ActivityNet-Entities Object Localization Task aims to evaluate how grounded or f
 
 An object word is first identified in the description and then localized in the video in the form of a spatial bounding box. The prediction is compared against the human annotation to determine the correctness and overall localization accuracy.
 
-**Winners will be announced at ActivityNet Challenge at CVPR'20 (June 14th). Prizes :heavy_dollar_sign::heavy_dollar_sign::heavy_dollar_sign: include $3500 cash award ($1500 for Sub-task I and $2000 for Sub-task II), sponsored by [P&G](https://us.pg.com/) and [UMich RI](https://robotics.umich.edu/), and subject to changes.***
+**Winners will be announced at ActivityNet Challenge at CVPR'20 (June 14th). Prizes :heavy_dollar_sign::heavy_dollar_sign::heavy_dollar_sign: include $3500 cash award ($1500 for Sub-task I and $2000 for Sub-task II), sponsored by [P&G](https://us.pg.com/) and [UMich RI](https://robotics.umich.edu/), and subject to changes.*** **Each team can have one or more members. An individual associated with multiple teams or a team with multiple accounts will be disqualified.**
 
 *A winner is valid and the monetary award will be distributed only if the winner solution is at least 5% relatively better than the baseline method GVD (under user `activitynet-entities`).
 
