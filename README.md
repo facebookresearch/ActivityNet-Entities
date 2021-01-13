@@ -1,6 +1,6 @@
 # ActivityNet Entities Dataset and Challenge
 
-### The 2nd [ActivityNet Entities Object Localization (Grounding) Challenge](http://activity-net.org/challenges/2020/tasks/guest_anet_eol.html) will be held at the official [ActivityNet Workshop](http://activity-net.org/challenges/2020/challenge.html) <img src='demo/anet_challenge_logo.png' alt="anet challenge logo" width="15%"/> at CVPR 2021! Watch the repo to receive the latest info regarding timeline and prizes!
+### The 2nd [ActivityNet Entities Object Localization (Grounding) Challenge](http://activity-net.org/challenges/2020/tasks/guest_anet_eol.html) will be held at the official [ActivityNet Workshop](http://activity-net.org/challenges/2020/challenge.html) <img src='demo/anet_challenge_logo.png' alt="anet challenge logo" width="15%"/> at CVPR 2021! Subscribe (watch) the repo to receive the latest info regarding timeline and prizes!
 
 ## <a name="aeol"></a>ActivityNet Entities Object Localization Challenge 2021
 ActivityNet-Entities Object Localization Task aims to evaluate how grounded or faithful a description (could be generated or ground-truth) is to the video they describe.
