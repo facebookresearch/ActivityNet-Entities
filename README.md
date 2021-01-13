@@ -1,27 +1,23 @@
 # ActivityNet Entities Dataset and Challenge
 
-### The 2nd [ActivityNet Entities Object Localization (Grounding) Challenge](http://activity-net.org/challenges/2020/tasks/guest_anet_eol.html) will be held at the official [ActivityNet Workshop](http://activity-net.org/challenges/2020/challenge.html) <img src='demo/anet_challenge_logo.png' alt="anet challenge logo" width="15%"/> at CVPR'21! Watch the repo to receive the latest info regarding timeline and prizes!
+### The 2nd [ActivityNet Entities Object Localization (Grounding) Challenge](http://activity-net.org/challenges/2020/tasks/guest_anet_eol.html) will be held at the official [ActivityNet Workshop](http://activity-net.org/challenges/2020/challenge.html) <img src='demo/anet_challenge_logo.png' alt="anet challenge logo" width="15%"/> at CVPR 2021! Watch the repo to receive the latest info regarding timeline and prizes!
 
 ## <a name="aeol"></a>ActivityNet Entities Object Localization Challenge 2021
-Coming soon!
-
-## <a name="aeol2020"></a>ActivityNet Entities Object Localization Challenge 2020
 ActivityNet-Entities Object Localization Task aims to evaluate how grounded or faithful a description (could be generated or ground-truth) is to the video they describe.
 
 An object word is first identified in the description and then localized in the video in the form of a spatial bounding box. The prediction is compared against the human annotation to determine the correctness and overall localization accuracy.
 
-**Winners will be announced at ActivityNet Challenge at CVPR'20 (June 14th). Prizes :heavy_dollar_sign::heavy_dollar_sign::heavy_dollar_sign: include $3500 cash award ($1500 for Sub-task I and $2000 for Sub-task II), sponsored by [P&G](https://us.pg.com/) and [UMich RI](https://robotics.umich.edu/), and subject to changes.*** **Each team can have one or more members. An individual associated with multiple teams or a team with multiple accounts will be disqualified.**
+**Winners will be announced at ActivityNet Workshop at CVPR 2021. Prizes :heavy_dollar_sign::heavy_dollar_sign::heavy_dollar_sign: include $3500+ cash award (at least $1500 for Sub-task I and $2000 for Sub-task II), sponsored by [P&G](https://us.pg.com/) and [UMich RI](https://robotics.umich.edu/), and subject to changes.*** **Each team can have one or more members. An individual associated with multiple teams or a team with multiple accounts will be disqualified.**
 
 *A winner is valid and the monetary award will be distributed only if the winner solution is at least 5% relatively better than the baseline method GVD (under user `activitynet-entities`).
 
 ### Important dates
 Note that these dates are tentative and subject to changes if necessary.
-- March 2: Public Train/Val/Test sets are available; participants can start training.
-- April 15: Release Hidden Test set with ground truth withheld and open evaluation server.
-- May 22: Public the leaderboard.
-- ~~May 29~~ **June 3 (extended)**: Close evaluation server.
-- ~~June 2~~ **June 5 (extended)**: Deadline for submitting the report.
-- June 14: A full-day workshop at CVPR 2020.
+- January 18: Release Train/Val/Test set; release Hidden Test set with ground truth withheld.
+- April 12: Open evaluation server on the (Hidden) Test set.
+- May 28: Close evaluation server.
+- June 2: Deadline for submitting the report.
+- June (TBD): A full-day workshop at CVPR 2021.
 
 ### Dataset overview
 ActivityNet-Entities is based on the video description dataset ActivityNet Captions and augments it with 158k bounding box annotations, each grounding a noun phrase (NP). In this challenge, we will use pre-processed object-based annotations that link individual object words to their corresponding regions in the video. This gives 432 unique object categories.
