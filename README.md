@@ -9,7 +9,7 @@ An object word is first identified in the description and then localized in the 
 
 **Winners will be announced at ActivityNet Workshop at CVPR 2021. Prizes :heavy_dollar_sign::heavy_dollar_sign::heavy_dollar_sign: include $3500+ cash award (at least $1500 for Sub-task I and $2000 for Sub-task II), sponsored by [P&G](https://us.pg.com/) and [UMich RI](https://robotics.umich.edu/), and subject to changes.*** **Each team can have one or more members. An individual associated with multiple teams or a team with multiple accounts will be disqualified.**
 
-*A winner is valid and the monetary award will be distributed only if the winner solution is at least 5% relatively better than the baseline method GVD (under user `activitynet-entities`).
+*A winner is valid and the monetary award will be distributed only if the winner solution is at least 10% relatively better than the baseline method GVD (under user `activitynet-entities`).
 
 ### Important dates
 Note that these dates are tentative and subject to changes if necessary.
