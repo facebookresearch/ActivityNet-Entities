@@ -15,7 +15,7 @@ An object word is first identified in the description and then localized in the 
 Note that these dates are tentative and subject to changes if necessary.
 - January 18: Release Train/Val/Test set; release Hidden Test set with ground truth withheld.
 - April 12: Open evaluation server on the (Hidden) Test set.
-- ~~May 28~~ June 4: Close evaluation server.
+- ~~May 28~~ June 8: Close evaluation server.
 - ~~June 2~~ June 9: Deadline for submitting the report.
 - June (TBD): A full-day workshop at CVPR 2021.
 
