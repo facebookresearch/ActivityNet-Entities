@@ -134,6 +134,15 @@ Please contact <luozhou@umich.edu> if you have any trouble running the code. Ple
 }
 ```
 
+### Organizers (alphabetical order)
+[Jason J. Corso](https://web.eecs.umich.edu/~jjcorso/), *Stevens Institute of Technology / Voxel51 (https://fiftyone.ai)*
+
+[Yannis Kalantidis](https://www.skamalas.com/), *NAVER LABS Europe*
+
+[Marcus Rohrbach](http://rohrbach.vision/), *Facebook AI Research*
+
+[Luowei Zhou](https://luoweizhou.github.io/), *Microsoft*
+
 ### Acknowledgement
 We thank Chih-Yao Ma for his helpful discussions and contribution to the code on evaluation metrics. We also thank Elliot Klein for his contribution on the annotation collection interface.
 
