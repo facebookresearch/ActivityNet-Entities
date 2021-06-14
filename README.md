@@ -12,7 +12,7 @@ An object word is first identified in the description and then localized in the 
 *A winner is valid and the monetary award will be distributed only if the winner solution is at least 10% relatively better than the baseline method GVD (under user `activitynet-entities`).
 
 ### Sponsors
-<a href="https://robotics.umich.edu/" target="_blank"><img src='demo/UMRIlogo.jpg' alt="UM Robotics logo" height="80"></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://us.pg.com/" target="_blank"><img src='demo/PGlogo.png' alt="P&G logo" height="80"></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://europe.naverlabs.com/" target="_blank"><img src='demo/NLElogo.png' alt="NAVER LABS Europe logo" height="80"></a>
+<a href="https://robotics.umich.edu/" target="_blank"><img src='demo/UMRIlogo.jpg' alt="UM Robotics logo" height="75"></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://us.pg.com/" target="_blank"><img src='demo/PGlogo.png' alt="P&G logo" height="75"></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://europe.naverlabs.com/" target="_blank"><img src='demo/NLElogo.png' alt="NAVER LABS Europe logo" height="75"></a>
 
 ### Important dates
 Note that these dates are tentative and subject to changes if necessary.
